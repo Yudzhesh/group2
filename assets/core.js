@@ -204,14 +204,11 @@ const LessonEngine = {
         ${answersHtml}
         
         <div style="background: #FFF9E6; border: 2px dashed #F5B301; padding: 20px; border-radius: 12px; margin-top: 30px;">
+               <div style="background: #FFF9E6; border: 2px dashed #F5B301; padding: 20px; border-radius: 12px; margin-top: 30px;">
             <h3 style="font-family: 'Montserrat'; font-size: 18px; color: #C99A1A; margin-bottom: 10px;">Как сдать работу?</h3>
-            <p style="margin-bottom: 10px; font-size: 15px;">1. <strong>Сделайте скриншот этого экрана</strong> (на ПК: Win+Shift+S или PrtSc; на телефоне: свайп или спец. кнопка).</p>
-            <p style="margin-bottom: 0; font-size: 15px;">2. Загрузите скриншот и <strong>фото тетради</strong> на платформу Взнание.</p>
-        </div>
-
-        <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: center;">
-            <button class="btn btn-secondary" onclick="LessonEngine.copyAnswers()">Скопировать текст ответов</button>
-            <button class="btn btn-primary" onclick="window.location.reload()">Пройти заново</button>
+            <p style="margin-bottom: 10px; font-size: 15px;">1. <strong>Сделайте скриншот этого экрана</strong> (на ПК: Win+Shift+S; на телефоне: свайп).</p>
+            <p style="margin-bottom: 10px; font-size: 15px;">2. <strong>Сфотографируйте классную работу</strong> (словарный диктант) <strong>и самостоятельную работу</strong> в тетради.</p>
+            <p style="margin-bottom: 0; font-size: 15px;">3. Загрузите скриншот и <strong>оба фото</strong> на платформу Взнание.</p>
         </div>
       </div>
     `;
