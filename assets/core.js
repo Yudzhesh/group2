@@ -1,5 +1,5 @@
 const LessonEngine = {
-  state: { currentTab: 0, taskIndex: 0, score: 0, completed: 0, totalTasks: 0, answered: false, selected: null, isTeacher: false, openAnswers: {} },
+  state: { currentTab: 0, taskIndex: 0, score: 0, completed: 0, totalTasks: 0, answered: false, selected: null, isTeacher: false, openAnswers: {}, trainerSeen: [] },
   
   init(data) {
     this.data = data;
@@ -7,7 +7,12 @@ const LessonEngine = {
       this.state.isTeacher = true;
       document.body.classList.add('teacher-mode');
     }
-    this.state.totalTasks = data.tabs.reduce((sum, tab) => sum + (tab.tasks ? tab.tasks.length : 0), 0);
+    // Считаем задания только в обычных вкладках, исключая тренажер
+    this.state.totalTasks = data.tabs.reduce((sum, tab) => {
+      if (tab.isTrainer) return sum;
+      return sum + (tab.tasks ? tab.tasks.length : 0);
+    }, 0);
+    
     this.renderStats();
     this.renderTab(0);
   },
@@ -52,6 +57,7 @@ const LessonEngine = {
   renderTask() {
     const tab = this.data.tabs[this.state.currentTab];
     const container = document.getElementById('task-container');
+    
     if (!tab.tasks || !tab.tasks[this.state.taskIndex]) {
       if (this.state.currentTab < this.data.tabs.length - 1) {
         container.innerHTML = `<div class="example" style="text-align:center; padding: 30px;"><p>Тема пройдена! Вы можете перейти к следующей вкладке.</p><button class="btn btn-primary" onclick="LessonEngine.renderTab(${this.state.currentTab + 1})">Следующая тема &rarr;</button></div>`;
@@ -74,7 +80,7 @@ const LessonEngine = {
       });
       html += `</div>`;
     } else if (task.type === 'input') {
-      html += `<input type="text" class="input-answer" id="input-answer" placeholder="Введите ответ...">`;
+      html += `<input type="text" class="input-answer" id="input-answer" placeholder="Введите ответ (степень пишите через ^, напр. x^2)">`;
     } else if (task.type === 'open') {
       const savedAnswer = this.state.openAnswers[`${this.state.currentTab}-${this.state.taskIndex}`] || '';
       html += `<textarea class="open-answer" id="open-answer" placeholder="Напишите ответ...">${savedAnswer}</textarea>`;
@@ -86,10 +92,15 @@ const LessonEngine = {
     html += `</div>`;
     
     html += `<div class="feedback" id="feedback"></div>`;
-    if (task.solution) html += `<div class="teacher-answer"><strong>Ответ:</strong><br>${task.solution}</div>`;
+    if (task.solution && !tab.isTrainer) html += `<div class="teacher-answer"><strong>Ответ:</strong><br>${task.solution}</div>`; // В тренажере ответ показываем только после проверки
     
-    html += `<div class="actions" id="next-actions" style="margin-top:20px; display:none;"><button class="btn btn-primary" onclick="LessonEngine.next()">Следующее задание &rarr;</button></div>`;
-    if (this.state.isTeacher) html += `<div class="actions" style="margin-top:20px;"><button class="btn btn-primary" onclick="LessonEngine.next()">Следующее задание &rarr;</button></div>`;
+    if (tab.isTrainer) {
+        html += `<div class="actions" id="next-actions" style="margin-top:20px; display:none;"><button class="btn btn-primary" onclick="LessonEngine.nextTrainer()">Другое задание &rarr;</button></div>`;
+    } else {
+        html += `<div class="actions" id="next-actions" style="margin-top:20px; display:none;"><button class="btn btn-primary" onclick="LessonEngine.next()">Следующее задание &rarr;</button></div>`;
+    }
+    
+    if (this.state.isTeacher && !tab.isTrainer) html += `<div class="actions" style="margin-top:20px;"><button class="btn btn-primary" onclick="LessonEngine.next()">Следующее задание &rarr;</button></div>`;
 
     html += `</div>`;
     container.innerHTML = html;
@@ -103,7 +114,8 @@ const LessonEngine = {
   },
   
   check() {
-    const task = this.data.tabs[this.state.currentTab].tasks[this.state.taskIndex];
+    const tab = this.data.tabs[this.state.currentTab];
+    const task = tab.tasks[this.state.taskIndex];
     const feedback = document.getElementById('feedback');
     let userVal = '';
     let isCorrect = false;
@@ -120,14 +132,15 @@ const LessonEngine = {
       this.state.openAnswers[`${this.state.currentTab}-${this.state.taskIndex}`] = userVal;
     }
 
-    if (!this.state.answered) {
+    // В тренажере мы НЕ увеличиваем completed и score глобально
+    if (!tab.isTrainer && !this.state.answered) {
         this.state.completed++;
         this.state.answered = true;
     }
 
     if (task.type === 'open') {
       feedback.className = 'feedback show success';
-      feedback.innerHTML = `<strong>Принято!</strong> Ответ сохранен.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Сверьтесь с тетрадью.'}`;
+      feedback.innerHTML = `<strong>Принято!</strong> Ответ записан.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Сверьтесь с тетрадью.'}`;
       this.finishTask();
       return;
     }
@@ -140,16 +153,19 @@ const LessonEngine = {
         else if (b.textContent === userVal && !isCorrect) b.classList.add('incorrect');
       });
     } else {
-    isCorrect = userVal.toLowerCase().replace(/[\s,\^]/g, '') === task.a.toLowerCase().replace(/[\s,\^]/g, '');
+      // Убираем пробелы, запятые и знаки ^ при проверке
+      const cleanUser = userVal.toLowerCase().replace(/[\s,\^]/g, '');
+      const cleanCorrect = task.a.toLowerCase().replace(/[\s,\^]/g, '');
+      isCorrect = cleanUser === cleanCorrect;
     }
 
     if (isCorrect) {
-      this.state.score++;
+      if (!tab.isTrainer) this.state.score++;
       feedback.className = 'feedback show success';
       feedback.innerHTML = '<strong>Верно!</strong>';
     } else {
       feedback.className = 'feedback show error';
-      feedback.innerHTML = `<strong>Не совсем.</strong> ${task.hint || ''}`;
+      feedback.innerHTML = `<strong>Не совсем.</strong> ${task.hint || ''} ${tab.isTrainer ? '<br><br><em>Правильный ответ: ' + task.a + '</em>' : ''}`;
     }
     this.finishTask();
   },
@@ -171,6 +187,18 @@ const LessonEngine = {
   
   next() {
     this.state.taskIndex++;
+    this.renderTask();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  nextTrainer() {
+    const tab = this.data.tabs[this.state.currentTab];
+    // Выбираем случайный индекс, не совпадающий с текущим
+    let newIndex = this.state.taskIndex;
+    while (newIndex === this.state.taskIndex && tab.tasks.length > 1) {
+        newIndex = Math.floor(Math.random() * tab.tasks.length);
+    }
+    this.state.taskIndex = newIndex;
     this.renderTask();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
@@ -197,25 +225,29 @@ const LessonEngine = {
         <div style="font-family: 'Montserrat'; color: #1AA6C4; font-weight: 600; margin-bottom: 20px;">${this.data.subject}</div>
         
         <div style="background: #F0F7FA; display: inline-block; padding: 15px 30px; border-radius: 12px; margin-bottom: 20px;">
-          <div style="font-family: 'Montserrat'; font-size: 14px; color: #6B7785;">Тестов решено верно:</div>
+          <div style="font-family: 'Montserrat'; font-size: 14px; color: #6B7785;">Заданий решено верно:</div>
           <div style="font-size: 32px; font-weight: bold; color: #1A2024;">${this.state.score} <span style="font-size: 20px; color: #6B7785;">из ${this.state.totalTasks}</span></div>
         </div>
         
         ${answersHtml}
         
         <div style="background: #FFF9E6; border: 2px dashed #F5B301; padding: 20px; border-radius: 12px; margin-top: 30px;">
-               <div style="background: #FFF9E6; border: 2px dashed #F5B301; padding: 20px; border-radius: 12px; margin-top: 30px;">
             <h3 style="font-family: 'Montserrat'; font-size: 18px; color: #C99A1A; margin-bottom: 10px;">Как сдать работу?</h3>
-            <p style="margin-bottom: 10px; font-size: 15px;">1. <strong>Сделайте скриншот этого экрана</strong> (на ПК: Win+Shift+S; на телефоне: свайп).</p>
-            <p style="margin-bottom: 10px; font-size: 15px;">2. <strong>Сфотографируйте классную работу</strong> (словарный диктант) <strong>и самостоятельную работу</strong> в тетради.</p>
-            <p style="margin-bottom: 0; font-size: 15px;">3. Загрузите скриншот и <strong>оба фото</strong> на платформу Взнание.</p>
+            <p style="margin-bottom: 10px; font-size: 15px;">1. <strong>Сделайте скриншот этого экрана</strong>.</p>
+            <p style="margin-bottom: 10px; font-size: 15px;">2. <strong>Сфотографируйте решение</strong> (тетрадь / черновик).</p>
+            <p style="margin-bottom: 0; font-size: 15px;">3. Загрузите всё на платформу Взнание.</p>
+        </div>
+
+        <div style="margin-top: 30px; display: flex; gap: 10px; justify-content: center;">
+            <button class="btn btn-secondary" onclick="LessonEngine.copyAnswers()">Скопировать текст</button>
+            <button class="btn btn-primary" onclick="window.location.reload()">Пройти заново</button>
         </div>
       </div>
     `;
   },
 
   copyAnswers() {
-    let text = `Результаты урока: ${this.data.subject}\nТестов решено верно: ${this.state.score} из ${this.state.totalTasks}\n\n--- РАЗВЕРНУТЫЕ ОТВЕТЫ ---\n\n`;
+    let text = `Результаты урока: ${this.data.subject}\nЗаданий решено верно: ${this.state.score} из ${this.state.totalTasks}\n\n--- РАЗВЕРНУТЫЕ ОТВЕТЫ ---\n\n`;
     let hasAnswers = false;
     for (let key in this.state.openAnswers) {
         hasAnswers = true;
