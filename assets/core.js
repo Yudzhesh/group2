@@ -140,7 +140,7 @@ const LessonEngine = {
         else if (b.textContent === userVal && !isCorrect) b.classList.add('incorrect');
       });
     } else {
-      isCorrect = userVal.toLowerCase().replace(/[\s,]/g, '') === task.a.toLowerCase().replace(/[\s,]/g, '');
+    isCorrect = userVal.toLowerCase().replace(/[\s,\^]/g, '') === task.a.toLowerCase().replace(/[\s,\^]/g, '');
     }
 
     if (isCorrect) {
