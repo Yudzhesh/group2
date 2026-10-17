@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Дополнительные стили для вкладок и результатов (можно добавить в lesson.css) */
   .tabs-nav { display: flex; background: #F9FBFC; border-bottom: 1px solid var(--border); padding: 0 20px; overflow-x: auto; }
   .tab-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: none; padding: 20px 20px; font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
   .tab-btn:hover { color: var(--primary); }
@@ -22,25 +21,20 @@
 <body>
 
 <header class="top-bar">
-  <!-- Логотип теперь просто текст, без ссылки -->
   <div class="brand">Северное Сияние <span>· Кампус</span></div>
-  
   <div class="teacher-badge">Режим наставника</div>
-  
   <div style="display: flex; align-items: center; gap: 15px;">
-    <!-- Кнопка возврата. text-decoration: none убирает подчеркивание -->
     <a href="../index.html" style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #fff; text-decoration: none; font-weight: 500; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">&larr; К списку уроков</a>
-    
     <div class="stats" id="stats"></div>
   </div>
 </header>
 
 <div class="container">
   <div class="tabs-nav" id="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab(0)">1. Определения</button>
-    <button class="tab-btn" onclick="switchTab(1)">2. Обстоятельства</button>
-    <button class="tab-btn" onclick="switchTab(2)">3. Сравнения и уточнения</button>
-    <button class="tab-btn" onclick="switchTab(3)">4. Словарный диктант</button>
+    <button class="tab-btn active" onclick="LessonEngine.renderTab(0)">1. Определения</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(1)">2. Обстоятельства</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(2)">3. Сравнения и уточнения</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(3)">4. Словарный диктант</button>
   </div>
 
   <div class="lesson-content" id="main-content">
@@ -52,6 +46,7 @@
 <script>
 const lessonData = {
   id: 'russian_8_obosoblennye_trenazher',
+  subject: 'Русский язык · 8 класс',
   tabs: [
     {
       title: "Обособленные определения",
@@ -158,10 +153,8 @@ const lessonData = {
     },
     {
       title: "Словарный диктант",
-      isActivity: true,
-      teacherNote: "Здесь мы работаем в тетрадях. Продиктуйте слова из списка 8 класса.",
-      dictationTeacher: "Словарный диктант: академия, интеллект, беллетристика, искусство, мировоззрение, иллюминация.",
-      dictationStudent: "Возьмите тетради и ручки. Наставник продиктует вам словарные слова (из списка 8 класса). Запишите их и подчеркните орфограммы.",
+      theory: "Возьмите тетради и ручки. Наставник продиктует вам словарные слова (из списка 8 класса). Запишите их и подчеркните орфограммы.",
+      teacherNote: "Тайминг: 5 минут. Продиктуйте слова: академия, интеллект, беллетристика, искусство, мировоззрение, иллюминация.",
       tasks: [
         {
           type: 'open',
@@ -174,181 +167,7 @@ const lessonData = {
   ]
 };
 
-const Engine = {
-  state: { currentTab: 0, taskIndex: 0, score: 0, attempts: 0, answered: false, selected: null, isTeacher: false },
-  init() {
-    if (window.location.search.includes('mode=teacher')) {
-      this.state.isTeacher = true;
-      document.body.classList.add('teacher-mode');
-    }
-    this.renderStats();
-    this.renderTab(0);
-  },
-  renderStats() {
-    const el = document.getElementById('stats');
-    if (el) el.innerHTML = `<div class="stat-item">✅ Верно: ${this.state.score}</div><div class="stat-item">📊 Попыток: ${this.state.attempts}</div>`;
-  },
-  renderTab(index) {
-    this.state.currentTab = index;
-    this.state.taskIndex = 0;
-    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', i === index);
-    });
-    this.renderContent();
-  },
-  renderContent() {
-    const tab = lessonData.tabs[this.state.currentTab];
-    const container = document.getElementById('main-content');
-    
-    let html = `<div class="lesson-header"><div class="lesson-subject">Русский язык · 8 класс</div><h1 class="lesson-title">${tab.title}</h1></div>`;
-    
-    if (!tab.isActivity) {
-      html += `<div class="theory"><div class="block-label">Теория</div><p>${tab.theory}</p></div>`;
-      html += `<div class="example"><div class="block-label">Пример</div><p>${tab.example}</p></div>`;
-      if (tab.teacherNote) html += `<div class="teacher-note"><strong>Методическая пометка:</strong><br>${tab.teacherNote}</div>`;
-    } else {
-      html += `<div class="violet"><div class="block-label">Работа в тетради</div><p>${this.state.isTeacher ? tab.dictationTeacher : tab.dictationStudent}</p></div>`;
-    }
-    
-    html += `<div id="task-container"></div>`;
-    container.innerHTML = html;
-    this.renderTask();
-  },
-  renderTask() {
-    const tab = lessonData.tabs[this.state.currentTab];
-    const task = tab.tasks[this.state.taskIndex];
-    const container = document.getElementById('task-container');
-    
-    if (!task) {
-      if (this.state.currentTab < lessonData.tabs.length - 1) {
-        container.innerHTML = `<div class="example" style="text-align:center; padding: 30px;"><p>Тема пройдена! Вы можете перейти к следующей вкладке сверху.</p><button class="btn btn-primary" onclick="Engine.renderTab(${this.state.currentTab + 1})">Следующая тема &rarr;</button></div>`;
-      } else {
-        container.innerHTML = `
-          <div class="results-card">
-            <h2 class="results-title">Урок завершен!</h2>
-            <div class="results-score">Правильных ответов: <strong>${this.state.score}</strong></div>
-            <p style="margin-bottom: 20px;">Не забудьте сфотографировать классную работу (с диктантом и самостоятельной работой) и загрузить на Взнание!</p>
-            <button class="btn btn-primary" onclick="window.location.reload()">Пройти заново</button>
-          </div>
-        `;
-      }
-      return;
-    }
-
-    let html = `<div class="task-block"><div class="task-question">${task.q}</div>`;
-    
-    if (task.type === 'choice') {
-      html += `<div class="options-list">`;
-      task.options.forEach(opt => {
-        html += `<button class="option-btn" onclick="Engine.select(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
-      });
-      html += `</div>`;
-    } else if (task.type === 'input') {
-      html += `<input type="text" class="input-answer" id="input-answer" placeholder="Введите ответ (например: 1, 3)">`;
-    } else if (task.type === 'open') {
-      html += `<textarea class="open-answer" id="open-answer" placeholder="Напишите ответ..."></textarea>`;
-    }
-
-    html += `<div class="actions" id="task-actions">`;
-    html += `<button class="btn btn-primary" id="btn-check" onclick="Engine.check()">Проверить</button>`;
-    if (task.hint) html += `<button class="btn btn-secondary" onclick="Engine.hint('${task.hint}')">Подсказка</button>`;
-    html += `</div>`;
-    
-    html += `<div class="feedback" id="feedback"></div>`;
-    
-    if (task.solution) {
-      html += `<div class="teacher-answer"><strong>Ответ:</strong><br>${task.solution}</div>`;
-    }
-    
-    html += `<div class="actions" id="next-actions" style="margin-top:20px; display:none;"><button class="btn btn-primary" onclick="Engine.next()">Следующее задание &rarr;</button></div>`;
-    if (this.state.isTeacher) {
-      html += `<div class="actions" style="margin-top:20px;"><button class="btn btn-primary" onclick="Engine.next()">Следующее задание &rarr;</button></div>`;
-    }
-
-    html += `</div>`;
-    container.innerHTML = html;
-  },
-  select(btn, val) {
-    if (this.state.answered) return;
-    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-    this.state.selected = val;
-  },
-  check() {
-    const task = lessonData.tabs[this.state.currentTab].tasks[this.state.taskIndex];
-    const feedback = document.getElementById('feedback');
-    let userVal = '';
-    let isCorrect = false;
-
-    if (task.type === 'choice') {
-      if (!this.state.selected) return alert('Выберите вариант.');
-      userVal = this.state.selected;
-    } else if (task.type === 'input') {
-      userVal = document.getElementById('input-answer').value.trim();
-      if (!userVal) return;
-    } else if (task.type === 'open') {
-      userVal = document.getElementById('open-answer').value.trim();
-      if (!userVal) return;
-    }
-
-    this.state.attempts++;
-
-    if (task.type === 'open') {
-      feedback.className = 'feedback show success';
-      feedback.innerHTML = `<strong>Принято!</strong> Ответ записан.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Проверьте себя по тетради.'}`;
-      
-      document.getElementById('btn-check').style.display = 'none';
-      document.querySelectorAll('.btn-secondary').forEach(b => b.style.display = 'none');
-      document.getElementById('next-actions').style.display = 'flex';
-      return;
-    }
-
-    if (task.type === 'choice') {
-      isCorrect = userVal === task.a;
-      document.querySelectorAll('.option-btn').forEach(b => {
-        b.disabled = true;
-        if (b.textContent === task.a) b.classList.add('correct');
-        else if (b.textContent === userVal && !isCorrect) b.classList.add('incorrect');
-      });
-    } else {
-      isCorrect = userVal.toLowerCase().replace(/[\s,]/g, '') === task.a.toLowerCase().replace(/[\s,]/g, '');
-    }
-
-    if (isCorrect) {
-      this.state.score++;
-      feedback.className = 'feedback show success';
-      feedback.innerHTML = '<strong>Верно!</strong>';
-    } else {
-      feedback.className = 'feedback show error';
-      feedback.innerHTML = `<strong>Не совсем.</strong> ${task.hint || ''}`;
-    }
-
-    this.renderStats();
-    document.getElementById('btn-check').style.display = 'none';
-    document.querySelectorAll('.btn-secondary').forEach(b => b.style.display = 'none');
-    document.getElementById('next-actions').style.display = 'flex';
-  },
-  hint(text) {
-    const feedback = document.getElementById('feedback');
-    feedback.className = 'feedback show';
-    feedback.style.background = '#FFF9E6';
-    feedback.style.color = '#7A5A1A';
-    feedback.textContent = text;
-  },
-  next() {
-    this.state.taskIndex++;
-    this.state.answered = false;
-    this.state.selected = null;
-    this.renderTask();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-};
-
-function switchTab(index) {
-  Engine.renderTab(index);
-}
-
-Engine.init();
+LessonEngine.init(lessonData);
 </script>
 </body>
 </html>
