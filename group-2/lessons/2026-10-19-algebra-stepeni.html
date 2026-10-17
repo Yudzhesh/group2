@@ -14,7 +14,6 @@
   .tab-btn:hover { color: var(--primary); }
   .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
   
-  /* Стили для математических формул */
   .math-block { background: #fff; padding: 15px 20px; border-radius: 8px; font-family: 'Lora', serif; font-size: 18px; text-align: center; margin: 15px 0; border: 1px solid var(--border); }
   sup { font-size: 0.7em; }
 </style>
@@ -35,7 +34,8 @@
     <button class="tab-btn active" onclick="LessonEngine.renderTab(0)">1. Определение</button>
     <button class="tab-btn" onclick="LessonEngine.renderTab(1)">2. Умножение и деление</button>
     <button class="tab-btn" onclick="LessonEngine.renderTab(2)">3. Возведение в степень</button>
-    <button class="tab-btn" onclick="LessonEngine.renderTab(3)">4. Стандартный вид</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(3)">4. Практика</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(4)">5. Тренажер</button>
   </div>
 
   <div class="lesson-content" id="main-content">
@@ -84,30 +84,36 @@ const lessonData = {
       teacherNote: "Тайминг: 6 минут. Главное правило — основания должны быть одинаковыми! 2<sup>3</sup> · 3<sup>2</sup> сложить нельзя.",
       tasks: [
         {
-          type: 'choice', level: 'B',
-          q: 'Упростите выражение: a<sup>5</sup> · a<sup>2</sup>',
-          options: ['a<sup>10</sup>', 'a<sup>7</sup>', 'a<sup>3</sup>', '2a<sup>7</sup>'],
-          a: 'a<sup>7</sup>', hint: 'Показатели нужно сложить.',
-          solution: 'a<sup>5</sup> · a<sup>2</sup> = a<sup>5+2</sup> = a<sup>7</sup>.'
+          type: 'choice', level: 'A',
+          q: 'Упростите выражение: a<sup>3</sup> · a<sup>7</sup>',
+          options: ['a<sup>10</sup>', 'a<sup>21</sup>', 'a<sup>4</sup>', '2a<sup>10</sup>'],
+          a: 'a<sup>10</sup>', hint: 'Показатели нужно сложить.',
+          solution: 'a<sup>3</sup> · a<sup>7</sup> = a<sup>3+7</sup> = a<sup>10</sup>.'
         },
         {
           type: 'input', level: 'A',
-          q: 'Вычислите: 2<sup>3</sup> · 2<sup>2</sup>. Напишите только число.',
-          a: '32', hint: '2<sup>3</sup> = 8, 2<sup>2</sup> = 4. Или 2<sup>5</sup>.',
-          solution: '2<sup>3+2</sup> = 2<sup>5</sup> = 32.'
+          q: 'Вычислите: 2<sup>5</sup> : 2<sup>2</sup>. Напишите только число.',
+          a: '8', hint: 'Из первого показателя вычтите второй.',
+          solution: '2<sup>5-2</sup> = 2<sup>3</sup> = 8.'
         },
         {
           type: 'input', level: 'B',
-          q: 'Вычислите: 3<sup>5</sup> : 3<sup>3</sup>. Напишите только число.',
-          a: '9', hint: 'Из первого показателя вычтите второй.',
-          solution: '3<sup>5-3</sup> = 3<sup>2</sup> = 9.'
+          q: 'Упростите: x<sup>8</sup> : x<sup>3</sup>. Напишите ответ (степень через ^).',
+          a: 'x^5', hint: 'Вычтите показатели.',
+          solution: 'x<sup>8-3</sup> = x<sup>5</sup>.'
+        },
+        {
+          type: 'input', level: 'B',
+          q: 'Упростите: a<sup>2</sup> · a<sup>5</sup> · a. (напишите через ^)',
+          a: 'a^8', hint: 'У буквы a без степени показатель равен 1.',
+          solution: 'a<sup>2+5+1</sup> = a<sup>8</sup>.'
         },
         {
           type: 'choice', level: 'C',
-          q: 'Упростите выражение: (b<sup>4</sup> · b<sup>3</sup>) : b<sup>2</sup>',
-          options: ['b<sup>5</sup>', 'b<sup>9</sup>', 'b<sup>6</sup>', 'b<sup>1</sup>'],
-          a: 'b<sup>5</sup>', hint: 'Сначала сложите степени в скобках, потом вычтите.',
-          solution: 'b<sup>4+3</sup> = b<sup>7</sup>. b<sup>7</sup> : b<sup>2</sup> = b<sup>7-2</sup> = b<sup>5</sup>.'
+          q: 'Упростите выражение: (x<sup>5</sup> · x<sup>3</sup>) : x<sup>4</sup>',
+          options: ['x<sup>4</sup>', 'x<sup>12</sup>', 'x<sup>2</sup>', 'x<sup>9</sup>'],
+          a: 'x<sup>4</sup>', hint: 'Сначала сложите степени в скобках, потом вычтите.',
+          solution: 'x<sup>5+3</sup> = x<sup>8</sup>. x<sup>8</sup> : x<sup>4</sup> = x<sup>4</sup>.'
         }
       ]
     },
@@ -118,53 +124,110 @@ const lessonData = {
       teacherNote: "Тайминг: 6 минут. Часто путают сложение и умножение показателей. Напомните, что здесь они перемножаются.",
       tasks: [
         {
-          type: 'choice', level: 'B',
-          q: 'Упростите выражение: (x<sup>3</sup>)<sup>4</sup>',
-          options: ['x<sup>7</sup>', 'x<sup>12</sup>', 'x<sup>81</sup>', '4x<sup>3</sup>'],
-          a: 'x<sup>12</sup>', hint: 'Показатели нужно перемножить.',
-          solution: 'x<sup>3·4</sup> = x<sup>12</sup>.'
+          type: 'choice', level: 'A',
+          q: 'Упростите выражение: (y<sup>4</sup>)<sup>3</sup>',
+          options: ['y<sup>7</sup>', 'y<sup>12</sup>', 'y<sup>64</sup>', '3y<sup>4</sup>'],
+          a: 'y<sup>12</sup>', hint: 'Показатели нужно перемножить.',
+          solution: 'y<sup>4·3</sup> = y<sup>12</sup>.'
         },
         {
           type: 'input', level: 'B',
-          q: 'Вычислите: (2<sup>2</sup>)<sup>3</sup>. Напишите только число.',
-          a: '64', hint: '2<sup>2</sup> = 4. Теперь 4 возведите в куб.',
-          solution: '(2<sup>2</sup>)<sup>3</sup> = 2<sup>6</sup> = 64.'
+          q: 'Упростите: (x<sup>3</sup>)<sup>4</sup> · x<sup>2</sup>. (напишите через ^)',
+          a: 'x^14', hint: 'Сначала возведите в степень, потом умножьте.',
+          solution: '(x<sup>3</sup>)<sup>4</sup> = x<sup>12</sup>. x<sup>12</sup> · x<sup>2</sup> = x<sup>14</sup>.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'Упростите выражение: (2x)<sup>4</sup>',
+          options: ['2x<sup>4</sup>', '8x<sup>4</sup>', '16x<sup>4</sup>', '16x'],
+          a: '16x<sup>4</sup>', hint: 'Возведите в степень и число 2, и букву x.',
+          solution: '2<sup>4</sup> · x<sup>4</sup> = 16x<sup>4</sup>.'
         },
         {
           type: 'choice', level: 'C',
-          q: 'Упростите выражение: (3a)<sup>2</sup>',
-          options: ['3a<sup>2</sup>', '6a<sup>2</sup>', '9a<sup>2</sup>', '9a'],
-          a: '9a<sup>2</sup>', hint: 'Возведите в квадрат и число 3, и букву a.',
-          solution: '(3a)<sup>2</sup> = 3<sup>2</sup> · a<sup>2</sup> = 9a<sup>2</sup>.'
+          q: 'Упростите: (3a<sup>2</sup>b)<sup>3</sup>',
+          options: ['3a<sup>6</sup>b<sup>3</sup>', '27a<sup>6</sup>b<sup>3</sup>', '9a<sup>6</sup>b<sup>3</sup>', '27a<sup>5</sup>b<sup>3</sup>'],
+          a: '27a<sup>6</sup>b<sup>3</sup>', hint: 'Возведите 3 в куб, а показатели a и b умножьте на 3.',
+          solution: '3<sup>3</sup> · a<sup>2·3</sup> · b<sup>1·3</sup> = 27a<sup>6</sup>b<sup>3</sup>.'
         }
       ]
     },
     {
-      title: "Стандартный вид числа",
-      theory: "Стандартный вид числа — это запись числа в виде произведения <strong>a · 10<sup>n</sup></strong>, где <em>1 ≤ a < 10</em>, а <em>n</em> — целое число.<br><br>Если число большое, показатель <em>n</em> положительный. Если число маленькое (меньше 1), показатель <em>n</em> отрицательный.",
-      example: "5 300 = 5,3 · 10<sup>3</sup><br>0,007 = 7 · 10<sup>-3</sup>",
-      teacherNote: "Тайминг: 5 минут. Покажите, как считать нули или знаки после запятой для определения степени.",
+      title: "Сложная практика (из ОГЭ)",
+      theory: "Применяйте при преобразовании степеней либо свойства, либо определение. Не торопитесь, следите за знаками.",
+      teacherNote: "Тайминг: 10 минут. Это задания повышенной сложности.",
       tasks: [
         {
-          type: 'choice', level: 'B',
-          q: 'Представьте число 84000 в стандартном виде.',
-          options: ['84 · 10<sup>3</sup>', '8,4 · 10<sup>3</sup>', '8,4 · 10<sup>4</sup>', '0,84 · 10<sup>5</sup>'],
-          a: '8,4 · 10<sup>4</sup>', hint: 'Число перед запятой должно быть от 1 до 10.',
-          solution: '8,4 · 10000 = 84000. Значит, 8,4 · 10<sup>4</sup>.'
+          type: 'input', level: 'B',
+          q: 'Вычислите: (-3)<sup>2</sup> + (-3)<sup>3</sup>. Напишите число.',
+          a: '-18', hint: 'Квадрат отрицательного числа положителен, куб — отрицателен.',
+          solution: '9 + (-27) = -18.'
         },
         {
-          type: 'choice', level: 'C',
-          q: 'Представьте число 0,0032 в стандартном виде.',
-          options: ['3,2 · 10<sup>-3</sup>', '3,2 · 10<sup>3</sup>', '32 · 10<sup>-4</sup>', '3,2 · 10<sup>-4</sup>'],
-          a: '3,2 · 10<sup>-3</sup>', hint: 'Запятая переносится на 3 знака вправо, значит степень отрицательная.',
-          solution: '3,2 · 10<sup>-3</sup> = 3,2 · 0,001 = 0,0032.'
+          type: 'input', level: 'B',
+          q: 'Вычислите: 2<sup>5</sup> · 2<sup>2</sup> : 2<sup>4</sup>. Напишите число.',
+          a: '8', hint: 'Сложите степени при умножении, затем вычтите.',
+          solution: '2<sup>5+2-4</sup> = 2<sup>3</sup> = 8.'
         },
         {
-          type: 'open', level: 'D',
-          q: 'Придумайте и запишите любое число, которое в стандартном виде выглядит как 5 · 10<sup>2</sup>. Объясните, как его прочитать.',
-          hint: 'Просто выполните умножение.',
-          solution: '5 · 100 = 500 (пятьсот).'
+          type: 'input', level: 'C',
+          q: 'Упростите: (2a<sup>3</sup>)<sup>2</sup> · (3a<sup>2</sup>)<sup>2</sup>. (через ^, например 36a^10)',
+          a: '36a^10', hint: 'Сначала возведите каждую скобку в квадрат, затем перемножьте.',
+          solution: '4a<sup>6</sup> · 9a<sup>4</sup> = 36a<sup>10</sup>.'
+        },
+        {
+          type: 'input', level: 'C',
+          q: 'Упростите: ((x<sup>3</sup>)<sup>2</sup> · x<sup>4</sup>) : (x<sup>2</sup>)<sup>2</sup>.',
+          a: 'x^6', hint: 'Соберите все степени в числителе и разделите.',
+          solution: 'x<sup>6</sup> · x<sup>4</sup> = x<sup>10</sup>. В знаменателе x<sup>4</sup>. x<sup>10-4</sup> = x<sup>6</sup>.'
+        },
+        {
+          type: 'input', level: 'D',
+          q: 'Вычислите: 2<sup>10</sup> · 2<sup>-5</sup> : 2<sup>2</sup>. (если проходили отрицательные степени)',
+          a: '8', hint: '2<sup>10-5-2</sup>.',
+          solution: '2<sup>3</sup> = 8.'
+        },
+        {
+          type: 'choice', level: 'D',
+          q: 'Сравните: 2<sup>10</sup> и 10<sup>2</sup>. Что больше?',
+          options: ['2<sup>10</sup>', '10<sup>2</sup>', 'Они равны', 'Сравнить нельзя'],
+          a: '2<sup>10</sup>', hint: '2<sup>10</sup> = 1024, 10<sup>2</sup> = 100.',
+          solution: '1024 > 100. Значит, 2<sup>10</sup>.'
         }
+      ]
+    },
+    {
+      title: "Бесконечный тренажер",
+      isTrainer: true,
+      theory: "Этот блок создан для практики. Здесь нет оценок и влияния на общую статистику. Решайте столько, сколько нужно. Нажимайте «Другое задание», чтобы получить новый пример.",
+      teacherNote: "Ученик может тренироваться самостоятельно. Ошибки здесь не идут в общий зачет.",
+      tasks: [
+        { type: 'input', q: 'Запишите в виде степени: x · x · x · x · x', a: 'x^5', hint: 'Считаем количество иксов.' },
+        { type: 'input', q: 'Вычислите: 2<sup>4</sup>', a: '16', hint: '2·2·2·2' },
+        { type: 'input', q: 'Вычислите: 5<sup>0</sup>', a: '1', hint: 'Любое число в нулевой степени.' },
+        { type: 'input', q: 'Упростите: a<sup>3</sup> · a<sup>7</sup>', a: 'a^10', hint: 'Сложите показатели.' },
+        { type: 'input', q: 'Упростите: x<sup>8</sup> : x<sup>3</sup>', a: 'x^5', hint: 'Вычтите показатели.' },
+        { type: 'input', q: 'Упростите: (y<sup>4</sup>)<sup>3</sup>', a: 'y^12', hint: 'Перемножьте показатели.' },
+        { type: 'input', q: 'Упростите: (2x)<sup>4</sup>', a: '16x^4', hint: 'Возведите 2 в 4 степень, а x умножите на 4.' },
+        { type: 'input', q: 'Упростите: (x/3)<sup>2</sup>', a: 'x^2/9', hint: 'Возведите в квадрат числитель и знаменатель.' },
+        { type: 'input', q: 'Упростите: a<sup>2</sup> · a<sup>5</sup> · a', a: 'a^8', hint: 'Не забудьте, что у последней "a" степень 1.' },
+        { type: 'input', q: 'Упростите: (x<sup>3</sup>)<sup>4</sup> · x<sup>2</sup>', a: 'x^14', hint: '(x^3)^4 = x^12, дальше сложите.' },
+        { type: 'input', q: 'Вычислите: (-3)<sup>2</sup> + (-3)<sup>3</sup>', a: '-18', hint: '9 + (-27).' },
+        { type: 'input', q: 'Упростите: (3a<sup>2</sup>b)<sup>3</sup>', a: '27a^6b^3', hint: 'Каждый множитель в куб.' },
+        { type: 'input', q: 'Упростите: (x/2)<sup>4</sup> · x<sup>2</sup>', a: 'x^6/16', hint: 'Сначала возведите дробь в степень.' },
+        { type: 'input', q: 'Упростите: (2a<sup>3</sup>)<sup>4</sup> · (3a<sup>2</sup>)<sup>2</sup>', a: '144a^16', hint: '16a^12 * 9a^4.' },
+        { type: 'input', q: 'Упростите: (x<sup>5</sup> · x<sup>3</sup>) : x<sup>4</sup>', a: 'x^4', hint: 'x^8 : x^4.' },
+        { type: 'input', q: 'Вычислите: 2<sup>5</sup> : 2<sup>2</sup> · 2<sup>4</sup>', a: '128', hint: '2^(5-2+4) = 2^7.' },
+        { type: 'input', q: 'Упростите: (a<sup>2</sup>b<sup>3</sup>)<sup>2</sup> · (a<sup>3</sup>b)<sup>4</sup>', a: 'a^16b^10', hint: 'a^4b^6 * a^12b^4.' },
+        { type: 'input', q: 'Упростите: ((x<sup>3</sup>)<sup>2</sup> · x<sup>4</sup>) : (x<sup>2</sup>)<sup>2</sup>', a: 'x^6', hint: 'x^6 * x^4 / x^4 = x^6.' },
+        { type: 'input', q: 'Упростите: (2a<sup>3</sup>)<sup>2</sup> · (3a<sup>2</sup>)<sup>3</sup> : (6a<sup>4</sup>)', a: '12a^4', hint: '4a^6 * 27a^6 / 6a^4 = 108a^12 / 6a^4.' },
+        { type: 'input', q: 'Вычислите: (2<sup>3</sup>)<sup>2</sup> : 2<sup>4</sup>', a: '4', hint: '2^6 / 2^4 = 2^2.' },
+        { type: 'input', q: 'Упростите: (x<sup>2</sup>y)<sup>3</sup> · (xy<sup>2</sup>)<sup>2</sup>', a: 'x^8y^7', hint: 'x^6y^3 * x^2y^4.' },
+        { type: 'input', q: 'Упростите: (a<sup>3</sup>b<sup>2</sup>)<sup>4</sup> : (a<sup>2</sup>b)<sup>3</sup>', a: 'a^6b^5', hint: 'a^12b^8 / a^6b^3.' },
+        { type: 'input', q: 'Вычислите: 3<sup>4</sup> · 3<sup>2</sup> : 3<sup>5</sup>', a: '3', hint: '3^6 / 3^5.' },
+        { type: 'input', q: 'Упростите: (2x<sup>3</sup>y<sup>2</sup>)<sup>3</sup> : (3x<sup>2</sup>y)<sup>2</sup>', a: '8x^5y^4/9', hint: '8x^9y^6 / 9x^4y^2.' },
+        { type: 'input', q: 'Сравните: 2<sup>10</sup> и 10<sup>2</sup>. (напишите >, < или =)', a: '>', hint: '1024 и 100.' },
+        { type: 'input', q: 'Сравните: 3<sup>4</sup> и 4<sup>3</sup>. (напишите >, < или =)', a: '>', hint: '81 и 64.' }
       ]
     }
   ]
