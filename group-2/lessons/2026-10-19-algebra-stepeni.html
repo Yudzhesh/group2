@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Свойства степеней · Тренажер</title>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  .tabs-nav { display: flex; background: #F9FBFC; border-bottom: 1px solid var(--border); padding: 0 20px; overflow-x: auto; }
+  .tab-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: none; padding: 20px 20px; font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  
+  /* Стили для математических формул */
+  .math-block { background: #fff; padding: 15px 20px; border-radius: 8px; font-family: 'Lora', serif; font-size: 18px; text-align: center; margin: 15px 0; border: 1px solid var(--border); }
+  sup { font-size: 0.7em; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="brand">Северное Сияние <span>· Кампус</span></div>
+  <div class="teacher-badge">Режим наставника</div>
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <a href="../index.html" style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #fff; text-decoration: none; font-weight: 500; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">&larr; К списку уроков</a>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="LessonEngine.renderTab(0)">1. Определение</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(1)">2. Умножение и деление</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(2)">3. Возведение в степень</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(3)">4. Стандартный вид</button>
+  </div>
+
+  <div class="lesson-content" id="main-content">
+    <!-- Содержимое генерируется через JS -->
+  </div>
+</div>
+
+<script src="../../assets/core.js"></script>
+<script>
+const lessonData = {
+  id: 'algebra_8_stepeni_trenazher',
+  subject: 'Алгебра · 8 класс',
+  tabs: [
+    {
+      title: "Что такое степень",
+      theory: "Степенью числа <em>a</em> с натуральным показателем <em>n</em> называют произведение <em>n</em> множителей, каждый из которых равен <em>a</em>.<br><br>Любое число в первой степени равно самому себе: <strong>a<sup>1</sup> = a</strong>.<br>Любое число (кроме нуля) в нулевой степени равно единице: <strong>a<sup>0</sup> = 1</strong>.",
+      example: "2<sup>4</sup> = 2 · 2 · 2 · 2 = 16<br><br>5<sup>1</sup> = 5<br>7<sup>0</sup> = 1<br>(-3)<sup>2</sup> = (-3) · (-3) = 9<br>(-3)<sup>3</sup> = (-3) · (-3) · (-3) = -27",
+      teacherNote: "Тайминг: 5 минут. Обратите внимание на то, что отрицательное число в четной степени дает плюс, а в нечетной — минус.",
+      tasks: [
+        {
+          type: 'choice', level: 'A',
+          q: 'Чему равно значение выражения 3<sup>3</sup>?',
+          options: ['9', '27', '81', '6'],
+          a: '27', hint: '3 · 3 · 3.',
+          solution: '3 · 3 = 9, 9 · 3 = 27.'
+        },
+        {
+          type: 'input', level: 'A',
+          q: 'Вычислите: 5<sup>0</sup> + 2<sup>3</sup>. Напишите только число.',
+          a: '9', hint: 'Любое число в нулевой степени равно 1.',
+          solution: '5<sup>0</sup> = 1. 2<sup>3</sup> = 8. 1 + 8 = 9.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'Какое из чисел является положительным?',
+          options: ['(-2)<sup>3</sup>', '(-2)<sup>2</sup>', '(-2)<sup>5</sup>', '-2<sup>4</sup>'],
+          a: '(-2)<sup>2</sup>', hint: 'Вспомните правило знаков при возведении в степень.',
+          solution: 'Отрицательное число в четной степени дает положительный результат. (-2)<sup>2</sup> = 4.'
+        }
+      ]
+    },
+    {
+      title: "Умножение и деление",
+      theory: "При умножении степеней с одинаковыми основаниями показатели складываются, а основание остается прежним: <br><div class='math-block'>a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></div>При делении степеней с одинаковыми основаниями из показателя числителя вычитается показатель знаменателя:<br><div class='math-block'>a<sup>m</sup> : a<sup>n</sup> = a<sup>m-n</sup></div>",
+      example: "x<sup>3</sup> · x<sup>4</sup> = x<sup>3+4</sup> = x<sup>7</sup><br><br>y<sup>8</sup> : y<sup>3</sup> = y<sup>8-3</sup> = y<sup>5</sup>",
+      teacherNote: "Тайминг: 6 минут. Главное правило — основания должны быть одинаковыми! 2<sup>3</sup> · 3<sup>2</sup> сложить нельзя.",
+      tasks: [
+        {
+          type: 'choice', level: 'B',
+          q: 'Упростите выражение: a<sup>5</sup> · a<sup>2</sup>',
+          options: ['a<sup>10</sup>', 'a<sup>7</sup>', 'a<sup>3</sup>', '2a<sup>7</sup>'],
+          a: 'a<sup>7</sup>', hint: 'Показатели нужно сложить.',
+          solution: 'a<sup>5</sup> · a<sup>2</sup> = a<sup>5+2</sup> = a<sup>7</sup>.'
+        },
+        {
+          type: 'input', level: 'A',
+          q: 'Вычислите: 2<sup>3</sup> · 2<sup>2</sup>. Напишите только число.',
+          a: '32', hint: '2<sup>3</sup> = 8, 2<sup>2</sup> = 4. Или 2<sup>5</sup>.',
+          solution: '2<sup>3+2</sup> = 2<sup>5</sup> = 32.'
+        },
+        {
+          type: 'input', level: 'B',
+          q: 'Вычислите: 3<sup>5</sup> : 3<sup>3</sup>. Напишите только число.',
+          a: '9', hint: 'Из первого показателя вычтите второй.',
+          solution: '3<sup>5-3</sup> = 3<sup>2</sup> = 9.'
+        },
+        {
+          type: 'choice', level: 'C',
+          q: 'Упростите выражение: (b<sup>4</sup> · b<sup>3</sup>) : b<sup>2</sup>',
+          options: ['b<sup>5</sup>', 'b<sup>9</sup>', 'b<sup>6</sup>', 'b<sup>1</sup>'],
+          a: 'b<sup>5</sup>', hint: 'Сначала сложите степени в скобках, потом вычтите.',
+          solution: 'b<sup>4+3</sup> = b<sup>7</sup>. b<sup>7</sup> : b<sup>2</sup> = b<sup>7-2</sup> = b<sup>5</sup>.'
+        }
+      ]
+    },
+    {
+      title: "Возведение в степень",
+      theory: "При возведении степени в степень показатели перемножаются: <br><div class='math-block'>(a<sup>m</sup>)<sup>n</sup> = a<sup>m · n</sup></div>При возведении в степень произведения (или дроби) в эту степень возводится каждый множитель:<br><div class='math-block'>(a · b)<sup>n</sup> = a<sup>n</sup> · b<sup>n</sup></div>",
+      example: "(x<sup>2</sup>)<sup>3</sup> = x<sup>2·3</sup> = x<sup>6</sup><br><br>(2y)<sup>3</sup> = 2<sup>3</sup> · y<sup>3</sup> = 8y<sup>3</sup>",
+      teacherNote: "Тайминг: 6 минут. Часто путают сложение и умножение показателей. Напомните, что здесь они перемножаются.",
+      tasks: [
+        {
+          type: 'choice', level: 'B',
+          q: 'Упростите выражение: (x<sup>3</sup>)<sup>4</sup>',
+          options: ['x<sup>7</sup>', 'x<sup>12</sup>', 'x<sup>81</sup>', '4x<sup>3</sup>'],
+          a: 'x<sup>12</sup>', hint: 'Показатели нужно перемножить.',
+          solution: 'x<sup>3·4</sup> = x<sup>12</sup>.'
+        },
+        {
+          type: 'input', level: 'B',
+          q: 'Вычислите: (2<sup>2</sup>)<sup>3</sup>. Напишите только число.',
+          a: '64', hint: '2<sup>2</sup> = 4. Теперь 4 возведите в куб.',
+          solution: '(2<sup>2</sup>)<sup>3</sup> = 2<sup>6</sup> = 64.'
+        },
+        {
+          type: 'choice', level: 'C',
+          q: 'Упростите выражение: (3a)<sup>2</sup>',
+          options: ['3a<sup>2</sup>', '6a<sup>2</sup>', '9a<sup>2</sup>', '9a'],
+          a: '9a<sup>2</sup>', hint: 'Возведите в квадрат и число 3, и букву a.',
+          solution: '(3a)<sup>2</sup> = 3<sup>2</sup> · a<sup>2</sup> = 9a<sup>2</sup>.'
+        }
+      ]
+    },
+    {
+      title: "Стандартный вид числа",
+      theory: "Стандартный вид числа — это запись числа в виде произведения <strong>a · 10<sup>n</sup></strong>, где <em>1 ≤ a < 10</em>, а <em>n</em> — целое число.<br><br>Если число большое, показатель <em>n</em> положительный. Если число маленькое (меньше 1), показатель <em>n</em> отрицательный.",
+      example: "5 300 = 5,3 · 10<sup>3</sup><br>0,007 = 7 · 10<sup>-3</sup>",
+      teacherNote: "Тайминг: 5 минут. Покажите, как считать нули или знаки после запятой для определения степени.",
+      tasks: [
+        {
+          type: 'choice', level: 'B',
+          q: 'Представьте число 84000 в стандартном виде.',
+          options: ['84 · 10<sup>3</sup>', '8,4 · 10<sup>3</sup>', '8,4 · 10<sup>4</sup>', '0,84 · 10<sup>5</sup>'],
+          a: '8,4 · 10<sup>4</sup>', hint: 'Число перед запятой должно быть от 1 до 10.',
+          solution: '8,4 · 10000 = 84000. Значит, 8,4 · 10<sup>4</sup>.'
+        },
+        {
+          type: 'choice', level: 'C',
+          q: 'Представьте число 0,0032 в стандартном виде.',
+          options: ['3,2 · 10<sup>-3</sup>', '3,2 · 10<sup>3</sup>', '32 · 10<sup>-4</sup>', '3,2 · 10<sup>-4</sup>'],
+          a: '3,2 · 10<sup>-3</sup>', hint: 'Запятая переносится на 3 знака вправо, значит степень отрицательная.',
+          solution: '3,2 · 10<sup>-3</sup> = 3,2 · 0,001 = 0,0032.'
+        },
+        {
+          type: 'open', level: 'D',
+          q: 'Придумайте и запишите любое число, которое в стандартном виде выглядит как 5 · 10<sup>2</sup>. Объясните, как его прочитать.',
+          hint: 'Просто выполните умножение.',
+          solution: '5 · 100 = 500 (пятьсот).'
+        }
+      ]
+    }
+  ]
+};
+
+LessonEngine.init(lessonData);
+</script>
+</body>
+</html>
