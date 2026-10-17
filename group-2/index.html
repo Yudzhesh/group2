@@ -3,179 +3,88 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Вход · Северное Сияние</title>
+<title>Уроки · Группа 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --primary: #1AA6C4;
-    --primary-dark: #158AA3;
-    --bg-body: #F4F6F8;
-    --text-main: #2C3338;
-    --text-muted: #6B7785;
-    --border: #E4E8EB;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { 
-    font-family: 'Montserrat', sans-serif; 
-    background: var(--bg-body); 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    height: 100vh; 
-    color: var(--text-main);
-  }
-
-  /* --- ЭКРАН ВХОДА --- */
-  .login-screen { 
-    background: #fff; 
-    padding: 40px; 
-    border-radius: 16px; 
-    box-shadow: 0 4px 30px rgba(0,0,0,0.05); 
-    text-align: center; 
-    max-width: 400px; 
-    width: 90%; 
-  }
-  .logo { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 10px; }
-  .logo span { font-weight: 400; color: var(--text-muted); }
-  .subtitle { font-size: 14px; color: var(--text-muted); margin-bottom: 30px; }
-  
-  .input-pass { 
-    width: 100%; 
-    padding: 14px; 
-    margin-bottom: 20px; 
-    border: 2px solid var(--border); 
-    border-radius: 8px; 
-    font-family: 'Montserrat', sans-serif; 
-    font-size: 16px; 
-    outline: none; 
-    transition: border 0.2s;
-  }
-  .input-pass:focus { border-color: var(--primary); }
-  
-  .btn-submit { 
-    width: 100%; 
-    padding: 14px; 
-    background: var(--primary); 
-    color: #fff; 
-    border: none; 
-    border-radius: 8px; 
-    font-size: 16px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    transition: background 0.2s; 
-  }
-  .btn-submit:hover { background: var(--primary-dark); }
-  .error-msg { color: #E53935; font-size: 14px; margin-top: 15px; display: none; }
-
-  /* --- ОСНОВНОЙ КОНТЕНТ (СКРЫТ) --- */
-  .main-content { 
-    display: none; 
-    text-align: center; 
-    max-width: 600px; 
-    width: 90%; 
-    animation: fadeIn 0.5s ease; 
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  
-  .main-content .logo { font-size: 32px; margin-bottom: 10px; }
-  .main-content .welcome-text { color: var(--text-muted); margin-bottom: 40px; font-size: 16px; }
-  
-  .group-links { display: flex; flex-direction: column; gap: 15px; }
-  .group-btn { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    background: #fff; 
-    padding: 20px 30px; 
-    border-radius: 12px; 
-    text-decoration: none; 
-    color: var(--text-main); 
-    font-weight: 600; 
-    font-size: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    border: 1px solid var(--border);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .group-btn:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 6px 20px rgba(26, 166, 196, 0.15); 
-    border-color: var(--primary);
-  }
-  .group-btn span.arrow { color: var(--primary); font-size: 20px; }
+  body { font-family: 'Lora', serif; background: #F4F6F8; color: #2C3338; margin: 0; padding: 0; line-height: 1.6; }
+  .header { background: #1AA6C4; color: #fff; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+  .brand { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 700; }
+  .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+  h1 { font-family: 'Montserrat', sans-serif; font-size: 28px; margin-bottom: 30px; color: #1A2024; }
+  .subject-section { margin-bottom: 40px; }
+  .subject-title { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 600; color: #1AA6C4; border-bottom: 2px solid #E4E8EB; padding-bottom: 10px; margin-bottom: 20px; }
+  .lesson-card { background: #fff; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; }
+  .lesson-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+  .lesson-info { flex: 1; }
+  .lesson-date { font-family: 'Montserrat', sans-serif; font-size: 13px; color: #6B7785; margin-bottom: 5px; }
+  .lesson-name { font-family: 'Montserrat', sans-serif; font-size: 17px; font-weight: 600; color: #1A2024; }
+  .btn-go { font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600; color: #1AA6C4; background: #F0F7FA; padding: 8px 16px; border-radius: 20px; }
 </style>
 </head>
 <body>
-
-  <!-- Экран входа -->
-  <div class="login-screen" id="loginScreen">
-    <div class="logo">Северное Сияние <span>· Кампус</span></div>
-    <div class="subtitle">Введите пароль для доступа к материалам</div>
-    <input type="password" id="passwordInput" class="input-pass" placeholder="Пароль" onkeypress="handleKeyPress(event)">
-    <button class="btn-submit" onclick="checkPassword()">Войти</button>
-    <div class="error-msg" id="errorMsg">Неверный пароль. Попробуйте снова.</div>
+  <div class="header">
+    <div class="brand">Северное Сияние <span style="font-weight:400; opacity:0.8;">· Материалы</span></div>
+    <a href="../index.html" style="color: #fff; text-decoration: none; font-family: 'Montserrat'; font-size: 14px; opacity: 0.8;">Выйти на главную</a>
   </div>
-
-  <!-- Основной контент (появляется после пароля) -->
-  <div class="main-content" id="mainContent">
-    <div class="logo">Северное Сияние <span>· Кампус</span></div>
-    <div class="welcome-text">Добро пожаловать в систему. Выберите группу для входа.</div>
+  <div class="container">
+    <h1>Материалы уроков</h1>
     
-    <div class="group-links">
-      <!-- Ссылка на группу 2 -->
-      <a href="group-2/index.html" class="group-btn">
-        <span>Материалы Группы 2</span>
-        <span class="arrow">&rarr;</span>
-      </a>
-      
-      <!-- Ссылка на группу 3 (если вы ее еще не создали, она выдаст 404) -->
-      <a href="group-3/index.html" class="group-btn">
-        <span>Материалы Группы 3</span>
-        <span class="arrow">&rarr;</span>
+    <!-- РУССКИЙ ЯЗЫК -->
+    <div class="subject-section">
+      <div class="subject-title">Русский язык</div>
+      <a href="lessons/2026-10-19-russian-obosoblennye.html" class="lesson-card">
+        <div class="lesson-info">
+          <div class="lesson-date">19 октября, понедельник</div>
+          <div class="lesson-name">Обособленные члены: тренажер (словарный диктант)</div>
+        </div>
+        <div class="btn-go">Открыть</div>
       </a>
     </div>
+
+    <!-- АЛГЕБРА -->
+    <div class="subject-section">
+      <div class="subject-title">Алгебра</div>
+      <a href="lessons/2026-10-19-algebra-stepeni.html" class="lesson-card">
+        <div class="lesson-info">
+          <div class="lesson-date">19 октября, понедельник</div>
+          <div class="lesson-name">Свойства степеней: полный тренажер</div>
+        </div>
+        <div class="btn-go">Открыть</div>
+      </a>
+    </div>
+
+    <!-- ХИМИЯ -->
+    <div class="subject-section">
+      <div class="subject-title">Химия</div>
+      <a href="lessons/2026-10-19-chemistry-mendeleev.html" class="lesson-card">
+        <div class="lesson-info">
+          <div class="lesson-date">19 октября, понедельник</div>
+          <div class="lesson-name">Периодическая таблица: от закона к прогнозам</div>
+        </div>
+        <div class="btn-go">Открыть</div>
+      </a>
+    </div>
+
+    <!-- ИСТОРИЯ -->
+    <div class="subject-section">
+      <div class="subject-title">История</div>
+      <a href="lessons/2026-10-19-history-aleksandr-i.html" class="lesson-card">
+        <div class="lesson-info">
+          <div class="lesson-date">19 октября, понедельник</div>
+          <div class="lesson-name">Внутренняя политика Александра I в 1815–1825 гг.</div>
+        </div>
+        <div class="btn-go">Открыть</div>
+      </a>
+    </div>
+    
+    <!-- ПУСТЫЕ ПРЕДМЕТЫ -->
+    <div class="subject-section">
+      <div class="subject-title">Геометрия, Физика, Биология...</div>
+      <div style="font-family: 'Montserrat'; font-size: 14px; color: #6B7785; font-style: italic;">Уроки появятся по мере готовности материалов...</div>
+    </div>
+
   </div>
-
-  <script>
-    // ВАШ ПАРОЛЬ
-    const SECRET_PASSWORD = "thebestway2026"; 
-
-    function checkPassword() {
-      const input = document.getElementById('passwordInput').value;
-      const errorMsg = document.getElementById('errorMsg');
-      
-      if (input === SECRET_PASSWORD) {
-        // Если пароль верный
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-        
-        // Запоминаем вход, чтобы не спрашивать пароль при обновлении страницы
-        sessionStorage.setItem('campus_logged_in', 'true');
-      } else {
-        // Если неверный
-        errorMsg.style.display = 'block';
-        document.getElementById('passwordInput').value = '';
-        // Трясем формой для эффекта ошибки
-        const form = document.querySelector('.login-screen');
-        form.style.transform = 'translateX(-5px)';
-        setTimeout(() => form.style.transform = 'translateX(5px)', 50);
-        setTimeout(() => form.style.transform = 'translateX(0)', 100);
-      }
-    }
-
-    function handleKeyPress(event) {
-      if (event.key === 'Enter') {
-        checkPassword();
-      }
-    }
-
-    // Проверка: если уже вошел, сразу показываем контент
-    if (sessionStorage.getItem('campus_logged_in') === 'true') {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'block';
-    }
-  </script>
-
 </body>
 </html>
