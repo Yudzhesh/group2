@@ -38,15 +38,32 @@ const LessonEngine = {
     this.renderContent();
   },
   
-  renderContent() {
+   renderContent() {
     const tab = this.data.tabs[this.state.currentTab];
     const container = document.getElementById('main-content');
     if (!container) return;
     
     let html = `<div class="lesson-header"><div class="lesson-subject">${this.data.subject || 'Урок'}</div><h1 class="lesson-title">${tab.title}</h1></div>`;
     
-    if (tab.theory) html += `<div class="theory"><div class="block-label">Теория</div><p>${tab.theory}</p></div>`;
-    if (tab.image) html += `<div class="image-block"><img src="${tab.image}" alt="Иллюстрация" onerror="this.style.display='none'"><div class="image-caption">${tab.imageCaption || ''}</div></div>`;
+    const blockClass = tab.isAdvanced ? 'advanced' : 'theory';
+    const blockLabel = tab.isAdvanced ? 'Углубленный материал' : 'Теория';
+
+    if (tab.theory) html += `<div class="${blockClass}"><div class="block-label">${blockLabel}</div><p>${tab.theory}</p></div>`;
+    
+    // Вставляем картинку, если она есть
+    if (tab.image) {
+        html += `<div class="image-block">
+            <img src="${tab.image}" alt="Иллюстрация" onerror="this.style.display='none'">
+            <div class="image-caption">${tab.imageCaption || ''}</div>
+        </div>`;
+    }
+
+    // Вставляем кастомный HTML (например, виджет атома), если он есть
+    if (tab.customHtml) {
+        html += tab.customHtml;
+    }
+
+    if (tab.example) html += `<div class="example"><div class="block-label">Пример</div><p>${tab.example}</p></div>`;
     if (tab.teacherNote) html += `<div class="teacher-note"><strong>Методическая пометка:</strong><br>${tab.teacherNote}</div>`;
     
     html += `<div id="task-container"></div>`;
