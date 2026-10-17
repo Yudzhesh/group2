@@ -10,23 +10,18 @@
 <style>
   body { font-family: 'Montserrat', sans-serif; background: #F4F6F8; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
   .hub-card { background: #fff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 30px rgba(0,0,0,0.05); text-align: center; max-width: 400px; width: 100%; }
-  .logo { font-size: 24px; font-weight: 700; color: #1AA6C4; margin-bottom: 30px; }
+  .logo { font-size: 24px; font-weight: 700; color: #1AA6C4; margin-bottom: 20px; }
   .logo span { font-weight: 400; color: #6B7785; }
-  .btn-group { display: flex; flex-direction: column; gap: 15px; }
-  .btn { padding: 15px 20px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; transition: all 0.2s; }
-  .btn-student { background: #1AA6C4; color: #fff; }
-  .btn-student:hover { background: #158AA3; }
-  .btn-teacher { background: #FFF8E1; color: #F5B301; border: 2px solid #F5B301; }
-  .btn-teacher:hover { background: #F5B301; color: #fff; }
+  .subtitle { font-size: 14px; color: #6B7785; margin-bottom: 30px; }
+  .btn { display: block; width: 100%; padding: 15px 20px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 600; background: #1AA6C4; color: #fff; box-sizing: border-box; transition: all 0.2s; }
+  .btn:hover { background: #158AA3; }
 </style>
 </head>
 <body>
   <div class="hub-card">
     <div class="logo">Северное Сияние <span>· Кампус</span></div>
-    <div class="btn-group">
-      <a href="group-2/index.html" class="btn btn-student">Я ученик (Группа 2)</a>
-      <a href="group-2/teacher.html" class="btn btn-teacher">Я наставник</a>
-    </div>
+    <div class="subtitle">Образовательные материалы</div>
+    <a href="group-2/index.html" class="btn">Перейти к урокам (Группа 2)</a>
   </div>
 </body>
 </html>
