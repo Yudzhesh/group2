@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Обособленные члены · Тренажер</title>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Дополнительные стили для вкладок и результатов (можно добавить в lesson.css) */
+  .tabs-nav { display: flex; background: #F9FBFC; border-bottom: 1px solid var(--border); padding: 0 20px; overflow-x: auto; }
+  .tab-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: none; padding: 20px 20px; font-size: 15px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .results-card { text-align: center; padding: 40px; background: var(--bg-card); border-radius: 16px; margin-top: 20px; border: 2px dashed var(--primary); }
+  .results-title { font-family: 'Montserrat', sans-serif; font-size: 32px; color: var(--success); margin-bottom: 20px; }
+  .results-score { font-size: 24px; margin-bottom: 30px; }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="brand">Северное Сияние <span>· Кампус</span></div>
+  <div class="teacher-badge">Режим наставника</div>
+  <div class="stats" id="stats"></div>
+</header>
+
+<div class="container">
+  <div class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">1. Определения</button>
+    <button class="tab-btn" onclick="switchTab(1)">2. Обстоятельства</button>
+    <button class="tab-btn" onclick="switchTab(2)">3. Сравнения и уточнения</button>
+    <button class="tab-btn" onclick="switchTab(3)">4. Словарный диктант</button>
+  </div>
+
+  <div class="lesson-content" id="main-content">
+    <!-- Содержимое генерируется через JS -->
+  </div>
+</div>
+
+<script src="../../assets/core.js"></script>
+<script>
+const lessonData = {
+  id: 'russian_8_obosoblennye_trenazher',
+  tabs: [
+    {
+      title: "Обособленные определения",
+      theory: "Обособляются определения, выраженные <strong>причастным оборотом</strong>, если они стоят <em>после</em> определяемого слова. Также обособляются <strong>приложения</strong> (существительные, дающие другое название предмету).",
+      example: "Книга, <u>прочитанная вчера</u>, лежала на столе. (Причастный оборот после слова «книга»).<br>Мой брат, <u>студент</u>, хорошо учится. (Приложение).",
+      teacherNote: "Тайминг: 5 минут. Напомните: если причастный оборот стоит ДО определяемого слова, запятая не ставится (например: «Прочитанная вчера книга лежала на столе»).",
+      tasks: [
+        {
+          type: 'choice',
+          q: 'В каком предложении НЕ нужно ставить запятую?',
+          options: [
+            'Дети игравшие во дворе не хотели уходить.',
+            'Игравшие во дворе дети не хотели уходить.',
+            'Он увидел дерево сломанное ветром.',
+            'Мой друг отличник помог мне с задачей.'
+          ],
+          a: 'Игравшие во дворе дети не хотели уходить.',
+          hint: 'Вспомните правило о месте причастного оборота.',
+          solution: 'Причастный оборот «игравшие во дворе» стоит ПЕРЕД определяемым словом «дети», поэтому запятая не нужна.'
+        },
+        {
+          type: 'input',
+          q: 'Выпишите цифры, на месте которых должны стоять запятые:<br><br>Знаменитые зодчие (1) создавшие в северных болотах этот город (2) воплотили в нём свои мечты.',
+          a: '12',
+          hint: 'Найдите причастный оборот.',
+          solution: 'Причастный оборот «создавшие в северных болотах этот город» стоит после слова «зодчие». Запятые на месте 1 и 2.'
+        },
+        {
+          type: 'open',
+          q: 'Придумайте и напишите предложение с обособленным приложением (например, с именем собственным или профессией).',
+          hint: 'Используйте конструкцию: Имя (кто он?), сделал что-то.',
+          solution: 'Пример: Мой друг, известный художник, подарил мне картину.'
+        }
+      ]
+    },
+    {
+      title: "Обособленные обстоятельства",
+      theory: "Обособляются обстоятельства, выраженные <strong>деепричастиями</strong> и <strong>деепричастными оборотами</strong> (что делая? что сделав?). Также обособляются обстоятельства с предлогами <em>несмотря на, благодаря, вопреки, согласно</em>.",
+      example: "Он бежал, <u>не оглядываясь</u>. (Деепричастие).<br><u>Несмотря на усталость</u>, мы продолжили путь. (Обстоятельство уступки).",
+      teacherNote: "Тайминг: 5 минут. Обратите внимание на ловушку: деепричастия, ставшие наречиями (например, «читать лежа»), не обособляются.",
+      tasks: [
+        {
+          type: 'choice',
+          q: 'В каком предложении запятая поставлена НЕВЕРНО?',
+          options: [
+            'Мальчик, смеясь, рассказывал историю.',
+            'Он работал, не покладая рук.',
+            'Благодаря помощи друга, я справился с заданием.',
+            'Она сидела молча, глядя в окно.'
+          ],
+          a: 'Он работал, не покладая рук.',
+          hint: 'Вспомните фразеологизмы.',
+          solution: '«Не покладая рук» — это фразеологизм, который не обособляется.'
+        },
+        {
+          type: 'input',
+          q: 'Выпишите цифры, на месте которых должны стоять запятые:<br><br>Взяв в долг у издателя (1) двадцать пять тысяч фунтов (2) Даррел решил организовать зоопарк.',
+          a: '12',
+          hint: 'Найдите деепричастный оборот.',
+          solution: 'Деепричастный оборот «Взяв в долг у издателя двадцать пять тысяч фунтов» обособляется с двух сторон (1 и 2).'
+        },
+        {
+          type: 'choice',
+          q: 'Какое обстоятельство НЕ обособляется?',
+          options: [
+            'Спустя рукава',
+            'Несмотря на дождь',
+            'Бегая по утрам',
+            'Вопреки ожиданиям'
+          ],
+          a: 'Спустя рукава',
+          hint: 'Это фразеологизм.',
+          solution: '«Спустя рукава» — фразеологический оборот, выступающий в роли наречия, он не обособляется.'
+        }
+      ]
+    },
+    {
+      title: "Сравнительные обороты и уточнения",
+      theory: "Обособляются сравнительные обороты с союзами <em>как, будто, словно, точно</em>. Также обособляются <strong>уточняющие члены</strong>, которые сужают понятие (где именно? когда именно?).",
+      example: "Он бежал, <u>как ветер</u>. (Сравнение).<br>Внизу, <u>в долине</u>, шумела река. (Уточнение).",
+      teacherNote: "Тайминг: 5 минут. Напомните правило: если союз «как» можно заменить на «в качестве», запятая не ставится (например: «Он известен как врач»).",
+      tasks: [
+        {
+          type: 'choice',
+          q: 'В каком предложении запятая НЕ нужна?',
+          options: [
+            'Он вошел как хозяин дома.',
+            'Дождь лил как из ведра.',
+            'Она была красива как роза.',
+            'Он летел как стрела.'
+          ],
+          a: 'Он вошел как хозяин дома.',
+          hint: 'Значение «в качестве кого?».',
+          solution: 'В предложении «Он вошел как хозяин дома» союз «как» имеет значение «в качестве», поэтому запятая не нужна.'
+        },
+        {
+          type: 'input',
+          q: 'Выпишите цифры, на месте которых должны стоять запятые:<br><br>Завтра (1) двадцать третьего октября (2) мы отправимся в поход (3) несмотря на прогноз.',
+          a: '123',
+          hint: 'Найдите уточнение и обстоятельство уступки.',
+          solution: '«Двадцать третьего октября» — уточнение даты (1 и 2). «Несмотря на прогноз» — обособленное обстоятельство (3).'
+        }
+      ]
+    },
+    {
+      title: "Словарный диктант",
+      isActivity: true,
+      teacherNote: "Здесь мы работаем в тетрадях. Продиктуйте слова из списка 8 класса.",
+      dictationTeacher: "Словарный диктант: академия, интеллект, беллетристика, искусство, мировоззрение, иллюминация.",
+      dictationStudent: "Возьмите тетради и ручки. Наставник продиктует вам словарные слова (из списка 8 класса). Запишите их и подчеркните орфограммы.",
+      tasks: [
+        {
+          type: 'open',
+          q: 'Запишите в тетрадь 3 слова из словарного диктанта, в которых вы сомневались, и составьте с ними одно сложное предложение.',
+          hint: 'Постарайтесь использовать причастный или деепричастный оборот.',
+          solution: 'Оценивается правильность написания слов и наличие обособленного члена в предложении.'
+        }
+      ]
+    }
+  ]
+};
+
+const Engine = {
+  state: { currentTab: 0, taskIndex: 0, score: 0, attempts: 0, answered: false, selected: null, isTeacher: false },
+  init() {
+    if (window.location.search.includes('mode=teacher')) {
+      this.state.isTeacher = true;
+      document.body.classList.add('teacher-mode');
+    }
+    this.renderStats();
+    this.renderTab(0);
+  },
+  renderStats() {
+    const el = document.getElementById('stats');
+    if (el) el.innerHTML = `<div class="stat-item">✅ Верно: ${this.state.score}</div><div class="stat-item">📊 Попыток: ${this.state.attempts}</div>`;
+  },
+  renderTab(index) {
+    this.state.currentTab = index;
+    this.state.taskIndex = 0;
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === index);
+    });
+    this.renderContent();
+  },
+  renderContent() {
+    const tab = lessonData.tabs[this.state.currentTab];
+    const container = document.getElementById('main-content');
+    
+    let html = `<div class="lesson-header"><div class="lesson-subject">Русский язык · 8 класс</div><h1 class="lesson-title">${tab.title}</h1></div>`;
+    
+    if (!tab.isActivity) {
+      html += `<div class="theory"><div class="block-label">Теория</div><p>${tab.theory}</p></div>`;
+      html += `<div class="example"><div class="block-label">Пример</div><p>${tab.example}</p></div>`;
+      if (tab.teacherNote) html += `<div class="teacher-note"><strong>Методическая пометка:</strong><br>${tab.teacherNote}</div>`;
+    } else {
+      html += `<div class="violet"><div class="block-label">Работа в тетради</div><p>${this.state.isTeacher ? tab.dictationTeacher : tab.dictationStudent}</p></div>`;
+    }
+    
+    html += `<div id="task-container"></div>`;
+    container.innerHTML = html;
+    this.renderTask();
+  },
+  renderTask() {
+    const tab = lessonData.tabs[this.state.currentTab];
+    const task = tab.tasks[this.state.taskIndex];
+    const container = document.getElementById('task-container');
+    
+    if (!task) {
+      if (this.state.currentTab < lessonData.tabs.length - 1) {
+        container.innerHTML = `<div class="example" style="text-align:center; padding: 30px;"><p>Тема пройдена! Вы можете перейти к следующей вкладке сверху.</p><button class="btn btn-primary" onclick="Engine.renderTab(${this.state.currentTab + 1})">Следующая тема &rarr;</button></div>`;
+      } else {
+        container.innerHTML = `
+          <div class="results-card">
+            <h2 class="results-title">Урок завершен!</h2>
+            <div class="results-score">Правильных ответов: <strong>${this.state.score}</strong></div>
+            <p style="margin-bottom: 20px;">Не забудьте сфотографировать классную работу (с диктантом и самостоятельной работой) и загрузить на Взнание!</p>
+            <button class="btn btn-primary" onclick="window.location.reload()">Пройти заново</button>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    let html = `<div class="task-block"><div class="task-question">${task.q}</div>`;
+    
+    if (task.type === 'choice') {
+      html += `<div class="options-list">`;
+      task.options.forEach(opt => {
+        html += `<button class="option-btn" onclick="Engine.select(this, '${opt.replace(/'/g, "\\'")}')">${opt}</button>`;
+      });
+      html += `</div>`;
+    } else if (task.type === 'input') {
+      html += `<input type="text" class="input-answer" id="input-answer" placeholder="Введите ответ (например: 1, 3)">`;
+    } else if (task.type === 'open') {
+      html += `<textarea class="open-answer" id="open-answer" placeholder="Напишите ответ..."></textarea>`;
+    }
+
+    html += `<div class="actions" id="task-actions">`;
+    html += `<button class="btn btn-primary" id="btn-check" onclick="Engine.check()">Проверить</button>`;
+    if (task.hint) html += `<button class="btn btn-secondary" onclick="Engine.hint('${task.hint}')">Подсказка</button>`;
+    html += `</div>`;
+    
+    html += `<div class="feedback" id="feedback"></div>`;
+    
+    if (task.solution) {
+      html += `<div class="teacher-answer"><strong>Ответ:</strong><br>${task.solution}</div>`;
+    }
+    
+    html += `<div class="actions" id="next-actions" style="margin-top:20px; display:none;"><button class="btn btn-primary" onclick="Engine.next()">Следующее задание &rarr;</button></div>`;
+    if (this.state.isTeacher) {
+      html += `<div class="actions" style="margin-top:20px;"><button class="btn btn-primary" onclick="Engine.next()">Следующее задание &rarr;</button></div>`;
+    }
+
+    html += `</div>`;
+    container.innerHTML = html;
+  },
+  select(btn, val) {
+    if (this.state.answered) return;
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    this.state.selected = val;
+  },
+  check() {
+    const task = lessonData.tabs[this.state.currentTab].tasks[this.state.taskIndex];
+    const feedback = document.getElementById('feedback');
+    let userVal = '';
+    let isCorrect = false;
+
+    if (task.type === 'choice') {
+      if (!this.state.selected) return alert('Выберите вариант.');
+      userVal = this.state.selected;
+    } else if (task.type === 'input') {
+      userVal = document.getElementById('input-answer').value.trim();
+      if (!userVal) return;
+    } else if (task.type === 'open') {
+      userVal = document.getElementById('open-answer').value.trim();
+      if (!userVal) return;
+    }
+
+    this.state.attempts++;
+
+    if (task.type === 'open') {
+      feedback.className = 'feedback show success';
+      feedback.innerHTML = `<strong>Принято!</strong> Ответ записан.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Проверьте себя по тетради.'}`;
+      
+      document.getElementById('btn-check').style.display = 'none';
+      document.querySelectorAll('.btn-secondary').forEach(b => b.style.display = 'none');
+      document.getElementById('next-actions').style.display = 'flex';
+      return;
+    }
+
+    if (task.type === 'choice') {
+      isCorrect = userVal === task.a;
+      document.querySelectorAll('.option-btn').forEach(b => {
+        b.disabled = true;
+        if (b.textContent === task.a) b.classList.add('correct');
+        else if (b.textContent === userVal && !isCorrect) b.classList.add('incorrect');
+      });
+    } else {
+      isCorrect = userVal.toLowerCase().replace(/[\s,]/g, '') === task.a.toLowerCase().replace(/[\s,]/g, '');
+    }
+
+    if (isCorrect) {
+      this.state.score++;
+      feedback.className = 'feedback show success';
+      feedback.innerHTML = '<strong>Верно!</strong>';
+    } else {
+      feedback.className = 'feedback show error';
+      feedback.innerHTML = `<strong>Не совсем.</strong> ${task.hint || ''}`;
+    }
+
+    this.renderStats();
+    document.getElementById('btn-check').style.display = 'none';
+    document.querySelectorAll('.btn-secondary').forEach(b => b.style.display = 'none');
+    document.getElementById('next-actions').style.display = 'flex';
+  },
+  hint(text) {
+    const feedback = document.getElementById('feedback');
+    feedback.className = 'feedback show';
+    feedback.style.background = '#FFF9E6';
+    feedback.style.color = '#7A5A1A';
+    feedback.textContent = text;
+  },
+  next() {
+    this.state.taskIndex++;
+    this.state.answered = false;
+    this.state.selected = null;
+    this.renderTask();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+};
+
+function switchTab(index) {
+  Engine.renderTab(index);
+}
+
+Engine.init();
+</script>
+</body>
+</html>
