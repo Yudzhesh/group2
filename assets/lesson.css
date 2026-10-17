@@ -126,3 +126,18 @@ a.brand {
 a.brand:hover {
   opacity: 0.8;
 }
+
+/* Стили для вкладки "Развитие" */
+.tab-btn.advanced-tab { color: #8A7AA8; }
+.tab-btn.advanced-tab.active { color: #8A7AA8; border-bottom-color: #8A7AA8; }
+
+/* Стили для интерактивной модели атома (Химия) */
+.atom-widget { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 24px 0; text-align: center; }
+.atom-select { font-family: 'Montserrat', sans-serif; font-size: 16px; padding: 10px 15px; border: 2px solid var(--primary); border-radius: 8px; outline: none; cursor: pointer; margin-bottom: 20px; }
+.atom-scene { position: relative; width: 300px; height: 300px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+.nucleus { width: 40px; height: 40px; background: #E53935; border-radius: 50%; z-index: 10; box-shadow: 0 0 15px rgba(229, 57, 53, 0.5); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-family: 'Montserrat'; font-size: 14px; }
+.shell { position: absolute; border: 1px dashed #B0BEC5; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); animation: spin 10s linear infinite; }
+.electron { width: 10px; height: 10px; background: #1AA6C4; border-radius: 50%; position: absolute; box-shadow: 0 0 5px rgba(26, 166, 196, 0.8); }
+@keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+.atom-legend { font-family: 'Montserrat'; font-size: 14px; color: var(--text-muted); margin-top: 15px; }
+.legend-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin: 0 5px 0 15px; vertical-align: middle; }
