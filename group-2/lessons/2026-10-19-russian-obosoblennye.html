@@ -22,9 +22,16 @@
 <body>
 
 <header class="top-bar">
-  <div class="brand">Северное Сияние <span>· Кампус</span></div>
+  <!-- Обернули логотип в ссылку на список уроков -->
+  <a href="../index.html" class="brand">Северное Сияние <span>· Кампус</span></a>
+  
   <div class="teacher-badge">Режим наставника</div>
-  <div class="stats" id="stats"></div>
+  
+  <!-- Добавили кнопку "Назад" для надежности -->
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <a href="../index.html" style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500;">&larr; К списку уроков</a>
+    <div class="stats" id="stats"></div>
+  </div>
 </header>
 
 <div class="container">
