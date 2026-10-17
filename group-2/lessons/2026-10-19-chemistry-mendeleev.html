@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Периодическая таблица · Химия</title>
+<link rel="stylesheet" href="../../assets/lesson.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Стили вкладок для этого конкретного урока */
+  .tabs-nav { display: flex; flex-wrap: wrap; justify-content: center; background: #F9FBFC; border-bottom: 1px solid var(--border); padding: 0 10px; }
+  .tab-btn { font-family: 'Montserrat', sans-serif; background: transparent; border: none; padding: 15px 12px; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--primary); }
+  .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="brand">Северное Сияние <span>· Кампус</span></div>
+  <div class="teacher-badge">Режим наставника</div>
+  <div style="display: flex; align-items: center; gap: 15px;">
+    <a href="../index.html" style="font-family: 'Montserrat', sans-serif; font-size: 14px; color: #fff; text-decoration: none; font-weight: 500; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">&larr; К списку уроков</a>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="tabs-nav" id="tabs-nav">
+    <button class="tab-btn active" onclick="LessonEngine.renderTab(0)">1. История</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(1)">2. Анатомия</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(2)">3. Строение</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(3)">4. Тренды</button>
+    <button class="tab-btn advanced-tab" onclick="LessonEngine.renderTab(4)">5. Развитие</button>
+    <button class="tab-btn" onclick="LessonEngine.renderTab(5)">6. Тренажер</button>
+  </div>
+
+  <div class="lesson-content" id="main-content">
+    <!-- Содержимое генерируется через JS -->
+  </div>
+</div>
+
+<script src="../../assets/core.js"></script>
+<script>
+// --- ДАННЫЕ ДЛЯ ИНТЕРАКТИВНОГО АТОМА ---
+const elementsData = [
+  { sym: 'H', name: 'Водород', z: 1, shells: [1] },
+  { sym: 'He', name: 'Гелий', z: 2, shells: [2] },
+  { sym: 'Li', name: 'Литий', z: 3, shells: [2, 1] },
+  { sym: 'Be', name: 'Бериллий', z: 4, shells: [2, 2] },
+  { sym: 'B', name: 'Бор', z: 5, shells: [2, 3] },
+  { sym: 'C', name: 'Углерод', z: 6, shells: [2, 4] },
+  { sym: 'N', name: 'Азот', z: 7, shells: [2, 5] },
+  { sym: 'O', name: 'Кислород', z: 8, shells: [2, 6] },
+  { sym: 'F', name: 'Фтор', z: 9, shells: [2, 7] },
+  { sym: 'Ne', name: 'Неон', z: 10, shells: [2, 8] },
+  { sym: 'Na', name: 'Натрий', z: 11, shells: [2, 8, 1] },
+  { sym: 'Mg', name: 'Магний', z: 12, shells: [2, 8, 2] },
+  { sym: 'Al', name: 'Алюминий', z: 13, shells: [2, 8, 3] },
+  { sym: 'Si', name: 'Кремний', z: 14, shells: [2, 8, 4] },
+  { sym: 'P', name: 'Фосфор', z: 15, shells: [2, 8, 5] },
+  { sym: 'S', name: 'Сера', z: 16, shells: [2, 8, 6] },
+  { sym: 'Cl', name: 'Хлор', z: 17, shells: [2, 8, 7] },
+  { sym: 'Ar', name: 'Аргон', z: 18, shells: [2, 8, 8] },
+  { sym: 'K', name: 'Калий', z: 19, shells: [2, 8, 8, 1] },
+  { sym: 'Ca', name: 'Кальций', z: 20, shells: [2, 8, 8, 2] }
+];
+
+// Функция для отрисовки атома
+function renderAtom(z) {
+  const el = elementsData.find(e => e.z === parseInt(z));
+  if(!el) return;
+  
+  const scene = document.getElementById('atom-scene');
+  scene.innerHTML = `<div class="nucleus">+${el.z}</div>`;
+  
+  el.shells.forEach((electronCount, index) => {
+    const radius = 60 + index * 40;
+    const shell = document.createElement('div');
+    shell.className = 'shell';
+    shell.style.width = radius * 2 + 'px';
+    shell.style.height = radius * 2 + 'px';
+    
+    for(let i=0; i<electronCount; i++) {
+        const angle = (i / electronCount) * 360;
+        const electron = document.createElement('div');
+        electron.className = 'electron';
+        electron.style.transform = `rotate(${angle}deg) translateX(${radius}px)`;
+        electron.style.left = `calc(50% - 5px)`;
+        electron.style.top = `calc(50% - 5px)`;
+        shell.appendChild(electron);
+    }
+    scene.appendChild(shell);
+  });
+}
+
+// --- ДАННЫЕ УРОКА ---
+const lessonData = {
+  id: 'chemistry_8_mendeleev',
+  subject: 'Химия · 8 класс',
+  tabs: [
+    {
+      title: "История и закон",
+      theory: "В 1869 году Дмитрий Иванович Менделеев расположил 63 известных тогда элемента по возрастанию атомных масс и заметил, что их свойства периодически повторяются. Он оставил пустые клетки и предсказал свойства еще не открытых элементов, например, галлия, скандия и германия.<br><br><strong>Современная формулировка:</strong> Свойства элементов находятся в периодической зависимости от <strong>заряда ядра атома</strong> (порядкового номера), а не от массы.<br><br>Существует легенда, что таблица приснилась Менделееву, но сам ученый это опровергал, говоря, что работал над ней около 20 лет.",
+      image: "https://commons.wikimedia.org/wiki/Special:FilePath/Dmitri_Mendeleev_1890s.jpg?width=400",
+      imageCaption: "Дмитрий Иванович Менделеев (1834–1907).",
+      example: "Менделеев предсказал свойства «эка-алюминия». Через 6 лет был открыт галлий (Ga), свойства которого совпали с предсказаниями.",
+      teacherNote: "Тайминг: 5 минут. Спросите учеников: почему сейчас таблица строится по заряду ядра, а не по массе? (Ответ: потому что изотопы).",
+      tasks: [
+        {
+          type: 'choice', level: 'A',
+          q: 'Что лежит в основе современной периодической таблицы?',
+          options: ['Атомная масса', 'Заряд ядра атома', 'Количество нейтронов', 'Валентность'],
+          a: 'Заряд ядра атома', hint: 'Это целое число, которое равно числу протонов.',
+          solution: 'Современный закон гласит: свойства элементов зависят от заряда ядра.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'В чем главная заслуга Менделеева перед наукой?',
+          options: ['Он открыл все элементы', 'Он изобрел атомную бомбу', 'Он предсказал свойства неизвестных элементов', 'Он открыл электрон'],
+          a: 'Он предсказал свойства неизвестных элементов', hint: 'Он оставил пустые клетки в таблице.',
+          solution: 'Менделеев оставил пустые места и точно описал свойства элементов, которые были открыты позже.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'Правда ли, что Менделеев увидел свою таблицу во сне?',
+          options: ['Да, он сам так говорил', 'Нет, это легенда, он работал над ней много лет', 'Да, но он забыл её', 'Нет, таблицу придумал не он'],
+          a: 'Нет, это легенда, он работал над ней много лет', hint: 'Сам ученый возмущался этой легендой.',
+          solution: 'Менделеев опровергал эту легенду, говоря, что работал над таблицей около 20 лет.'
+        }
+      ]
+    },
+    {
+      title: "Анатомия таблицы",
+      theory: "<strong>Периоды</strong> — горизонтальные ряды (всего 7). Номер периода = число электронных слоев в атоме.<br><strong>Группы</strong> — вертикальные столбцы (всего 18). Элементы одной группы имеют одинаковое число валентных электронов и схожие свойства.<br><br>Таблица делится на блоки: <strong>s</strong> (группы 1-2), <strong>p</strong> (13-18), <strong>d</strong> (3-12), <strong>f</strong> (вынесены вниз).<br><br><strong>Важный нюанс:</strong> Лантаноиды (f-элементы) вынесены в отдельный ряд внизу таблицы, потому что они очень похожи по свойствам и «не помещаются» в основную таблицу.",
+      image: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Periodic_table_ru.svg",
+      imageCaption: "Периодическая система химических элементов Д.И. Менделеева.",
+      example: "Натрий (Na): 3 период, 1 группа, s-элемент. Он находится в левой части таблицы, значит, это металл.",
+      teacherNote: "Тайминг: 6 минут. Попросите учеников найти элемент в 3 периоде, 17 группе (это Хлор).",
+      tasks: [
+        {
+          type: 'choice', level: 'A',
+          q: 'Сколько групп в современной периодической таблице?',
+          options: ['8', '10', '18', '32'],
+          a: '18', hint: 'Современная нумерация использует арабские цифры.',
+          solution: 'В современной таблице 18 групп.'
+        },
+        {
+          type: 'input', level: 'B',
+          q: 'Определите период и группу для элемента Кислород (O). Напишите через запятую (например: 2, 16).',
+          a: '2,16', hint: 'Он находится во втором ряду сверху и в 16 столбце.',
+          solution: 'Кислород находится во 2 периоде, 16 группе.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'Почему лантаноиды и актиноиды вынесены в отдельные ряды внизу таблицы?',
+          options: ['Они радиоактивны', 'Они очень похожи по свойствам и не помещаются в основные группы', 'Они не являются металлами', 'Они были открыты позже всех'],
+          a: 'Они очень похожи по свойствам и не помещаются в основные группы', hint: 'Их свойства почти одинаковы.',
+          solution: 'Лантаноиды и актиноиды имеют очень близкие свойства, поэтому для удобства их вынесли в отдельные ряды.'
+        }
+      ]
+    },
+    {
+      title: "Строение атома",
+      theory: "Периодичность свойств объясняется строением внешнего электронного слоя.<br>Элементы одной группы имеют одинаковую конфигурацию валентных электронов:<br>• 1 группа: ns<sup>1</sup><br>• 2 группа: ns<sup>2</sup><br>• 17 группа: ns<sup>2</sup>np<sup>5</sup><br><br><strong>Интересный факт:</strong> Водород — уникальный элемент. Он может проявлять свойства как металлов (1 группа), так и неметаллов (17 группа), поэтому его положение в таблице условно.",
+      customHtml: `
+        <div class="atom-widget">
+            <h3 style="font-family:'Montserrat'; margin-bottom:10px;">Интерактивная модель атома</h3>
+            <select class="atom-select" onchange="renderAtom(this.value)">
+                <option disabled selected>Выберите элемент...</option>
+                ${elementsData.map(e => `<option value="${e.z}">${e.name} (${e.sym})</option>`).join('')}
+            </select>
+            <div class="atom-scene" id="atom-scene">
+                <div style="color:#6B7785; font-family:'Montserrat'; font-size:14px;">Выберите элемент из списка</div>
+            </div>
+            <div class="atom-legend">
+                <span class="legend-dot" style="background:#E53935;"></span> Протоны (ядро)
+                <span class="legend-dot" style="background:#1AA6C4;"></span> Электроны (слои)
+            </div>
+        </div>
+      `,
+      example: "Na (11): [Ne] 3s<sup>1</sup> — 1 валентный электрон.<br>Mg (12): [Ne] 3s<sup>2</sup> — 2 валентных электрона.<br>Al (13): [Ne] 3s<sup>2</sup>3p<sup>1</sup> — 3 валентных электрона.",
+      teacherNote: "Тайминг: 5 минут. Покажите, как заполняются орбитали на интерактивной модели. Попросите выбрать Натрий (Na) и Кислород (O) и сравнить число слоев.",
+      tasks: [
+        {
+          type: 'input', level: 'B',
+          q: 'Сколько валентных электронов у атома Хлора (Cl)? Напишите число.',
+          a: '7', hint: 'Он находится в 17 группе.',
+          solution: 'Конфигурация Cl: [Ne] 3s<sup>2</sup>3p<sup>5</sup>. 2+5 = 7 валентных электронов.'
+        },
+        {
+          type: 'choice', level: 'B',
+          q: 'У какого элемента внешний слой завершен (8 электронов)?',
+          options: ['Кислород (O)', 'Неон (Ne)', 'Натрий (Na)', 'Хлор (Cl)'],
+          a: 'Неон (Ne)', hint: 'Это инертный газ.',
+          solution: 'Неон — инертный газ, его внешний слой завершен: 2s<sup>2</sup>2p<sup>6</sup>.'
+        },
+        {
+          type: 'choice', level: 'C',
+          q: 'Почему водород иногда ставят в 1 группу, а иногда в 17?',
+          options: ['У него 1 электрон, но до завершения слоя ему не хватает 1', 'Он радиоактивен', 'Он не имеет запаха', 'Он легче воздуха'],
+          a: 'У него 1 электрон, но до завершения слоя ему не хватает 1', hint: 'Он может и отдавать, и принимать электрон.',
+          solution: 'Водород может отдавать свой единственный электрон (как металлы 1 группы) и принимать один электрон до завершения слоя (как неметаллы 17 группы).'
+        }
+      ]
+    },
+    {
+      title: "Тренды и свойства",
+      theory: "В периоде (слева направо): радиус уменьшается, электроотрицательность (ЭО) растет, металлические свойства ослабевают.<br>В группе (сверху вниз): радиус увеличивается, ЭО падает, металлические свойства усиливаются.<br><br><strong>Самый редкий элемент:</strong> Астат (At). В земной коре его содержится менее 30 граммов одновременно.",
+      example: "Сравним Na и Mg (3 период). Натрий левее магния, значит, Na более сильный металл, его радиус больше, а ЭО меньше.<br>Сравним Li и Na (1 группа). Натрий ниже, значит, его радиус больше.",
+      teacherNote: "Тайминг: 7 минут. Объясните, что металлы отдают электроны, а неметаллы принимают. Самые сильные металлы — внизу слева, самые сильные неметаллы — вверху справа.",
+      tasks: [
+        {
+          type: 'choice', level: 'B',
+          q: 'У какого атома радиус больше?',
+          options: ['Литий (Li)', 'Натрий (Na)', 'Калий (K)', 'Радиус одинаковый'],
+          a: 'Калий (K)', hint: 'Они все в одной группе, но калий ниже всех.',
+          solution: 'В группе сверху вниз радиус увеличивается. Калий ниже всех.'
+        },
+        {
+          type: 'choice', level: 'C',
+          q: 'Какой элемент обладает наибольшей электроотрицательностью?',
+          options: ['Фтор (F)', 'Хлор (Cl)', 'Кислород (O)', 'Сера (S)'],
+          a: 'Фтор (F)', hint: 'Самый сильный неметалл находится в правом верхнем углу.',
+          solution: 'Фтор — самый электроотрицательный элемент (находится в правом верхнем углу).'
+        },
+        {
+          type: 'input', level: 'C',
+          q: 'Какой элемент является самым редким в природе? Напишите его символ.',
+          a: 'At', hint: 'Он находится в 17 группе, под йодом.',
+          solution: 'Самый редкий природный элемент — астат (At).'
+        }
+      ]
+    },
+    {
+      title: "Развитие (Глубина)",
+      isAdvanced: true,
+      theory: "<strong>Для идущих впереди:</strong> Реальная периодичность имеет аномалии. Они не ломают закон, а показывают, что свойства определяются тонкой электронной структурой.<br><br>1. <strong>Аномалии конфигураций:</strong> У хрома (Cr) и меди (Cu) электрон перескакивает на d-подуровень, чтобы сделать его устойчивым.<br>2. <strong>d-сжатие:</strong> После лантаноидов радиусы элементов почти не растут.<br>3. <strong>Инертная пара:</strong> Таллий (Tl) и свинец (Pb) предпочитают степень окисления на 2 меньше высшей.<br>4. <strong>Диагональное сходство:</strong> Бериллий (Be) и Алюминий (Al) похожи по свойствам, хотя стоят далеко.",
+      example: "Хром (Z=24): ожидаемая конфигурация 3d<sup>4</sup>4s<sup>2</sup>, но реальная — <strong>3d<sup>5</sup>4s<sup>1</sup></strong>. Потому что полузаполненный d-подуровень энергетически выгоднее.",
+      teacherNote: "Тайминг: 10 минут. Этот блок только для тех, кто быстро справляется. Объясните, что такое обменная энергия, но без формул.",
+      tasks: [
+        {
+          type: 'choice', level: 'D',
+          q: 'Почему у меди (Cu) реальная конфигурация 3d<sup>10</sup>4s<sup>1</sup>, а не 3d<sup>9</sup>4s<sup>2</sup>?',
+          options: ['Так проще запомнить', 'Полностью заполненный d-подуровень энергетически выгоднее', 'Медь не подчиняется законам', 'Из-за температуры'],
+          a: 'Полностью заполненный d-подуровень энергетически выгоднее', hint: 'Атомы стремятся к состоянию с минимальной энергией.',
+          solution: 'Перескок электрона создает полностью заполненный 3d<sup>10</sup> подуровень, что дает энергетический выигрыш.'
+        },
+        {
+          type: 'open', level: 'D',
+          q: 'Приведите пример диагонального сходства из текста и объясните, в чем оно проявляется.',
+          hint: 'Вспомните про Бериллий и Алюминий.',
+          solution: 'Диагональное сходство: Li-Mg, Be-Al, B-Si. Например, Be и Al образуют амфотерные оксиды и гидроксиды.'
+        }
+      ]
+    },
+    {
+      title: "Тренажер по элементам",
+      isTrainer: true,
+      theory: "Бесконечный тренажер на знание элементов, их символов и трендов. Нажимайте «Другое задание».",
+      teacherNote: "Ученик тренируется сам. Рекомендуется пройти не менее 15 заданий.",
+      tasks: [
+        { type: 'input', q: 'Какой химический символ у элемента Железо?', a: 'Fe', hint: 'Латинское название — Ferrum.' },
+        { type: 'input', q: 'Какой химический символ у элемента Золото?', a: 'Au', hint: 'Латинское название — Aurum.' },
+        { type: 'input', q: 'Сколько протонов у атома Углерода (C)?', a: '6', hint: 'Смотрим на порядковый номер.' },
+        { type: 'input', q: 'Сколько электронов у атома Кислорода (O)?', a: '8', hint: 'Нейтральный атом.' },
+        { type: 'input', q: 'Назовите элемент с порядковым номером 11.', a: 'Натрий', hint: 'Входит в состав соли.' },
+        { type: 'input', q: 'Назовите элемент с порядковым номером 17.', a: 'Хлор', hint: 'Желто-зеленый газ.' },
+        { type: 'choice', q: 'Какой из элементов является металлом?', options: ['O', 'Cl', 'Fe', 'S'], a: 'Fe', hint: 'Он в левой части таблицы.' },
+        { type: 'choice', q: 'Какой из элементов является неметаллом?', options: ['Na', 'K', 'Ca', 'S'], a: 'S', hint: 'Он в правой части.' },
+        { type: 'choice', q: 'У какого атома радиус больше?', options: ['F', 'Cl', 'Br', 'I'], a: 'I', hint: 'Самый нижний в группе галогенов.' },
+        { type: 'choice', q: 'У какого элемента выше электроотрицательность?', options: ['Na', 'Mg', 'Al', 'Si'], a: 'Si', hint: 'Двигаемся слева направо.' },
+        { type: 'input', q: 'Какой элемент имеет конфигурацию 1s<sup>2</sup>2s<sup>1</sup>?', a: 'Литий', hint: 'Второй период, 1 группа.' },
+        { type: 'input', q: 'Какой элемент имеет конфигурацию [Ne]3s<sup>2</sup>3p<sup>5</sup>?', a: 'Хлор', hint: 'Третий период, 17 группа.' },
+        { type: 'input', q: 'Сколько валентных электронов у Магния (Mg)?', a: '2', hint: 'Он во второй группе.' },
+        { type: 'input', q: 'Сколько валентных электронов у Азота (N)?', a: '5', hint: 'Конфигурация 2s<sup>2</sup>2p<sup>3</sup>.' },
+        { type: 'choice', q: 'Какой оксид является амфотерным?', options: ['Na<sub>2</sub>O', 'Al<sub>2</sub>O<sub>3</sub>', 'SO<sub>3</sub>', 'MgO'], a: 'Al<sub>2</sub>O<sub>3</sub>', hint: 'Алюминий проявляет двойственные свойства.' }
+      ]
+    }
+  ]
+};
+
+LessonEngine.init(lessonData);
+</script>
+</body>
+</html>
