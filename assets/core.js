@@ -1,5 +1,5 @@
 const LessonEngine = {
-  state: { currentTab: 0, taskIndex: 0, score: 0, completed: 0, totalTasks: 0, answered: false, selected: null, isTeacher: false },
+  state: { currentTab: 0, taskIndex: 0, score: 0, completed: 0, totalTasks: 0, answered: false, selected: null, isTeacher: false, openAnswers: {} },
   
   init(data) {
     this.data = data;
@@ -41,7 +41,7 @@ const LessonEngine = {
     let html = `<div class="lesson-header"><div class="lesson-subject">${this.data.subject || 'Урок'}</div><h1 class="lesson-title">${tab.title}</h1></div>`;
     
     if (tab.theory) html += `<div class="theory"><div class="block-label">Теория</div><p>${tab.theory}</p></div>`;
-    if (tab.image) html += `<div class="image-block"><img src="${tab.image}" alt="Иллюстрация"><div class="image-caption">${tab.imageCaption || ''}</div></div>`;
+    if (tab.image) html += `<div class="image-block"><img src="${tab.image}" alt="Иллюстрация" onerror="this.style.display='none'"><div class="image-caption">${tab.imageCaption || ''}</div></div>`;
     if (tab.teacherNote) html += `<div class="teacher-note"><strong>Методическая пометка:</strong><br>${tab.teacherNote}</div>`;
     
     html += `<div id="task-container"></div>`;
@@ -56,7 +56,7 @@ const LessonEngine = {
       if (this.state.currentTab < this.data.tabs.length - 1) {
         container.innerHTML = `<div class="example" style="text-align:center; padding: 30px;"><p>Тема пройдена! Вы можете перейти к следующей вкладке.</p><button class="btn btn-primary" onclick="LessonEngine.renderTab(${this.state.currentTab + 1})">Следующая тема &rarr;</button></div>`;
       } else {
-        container.innerHTML = `<div class="results-card"><h2 class="results-title">Урок завершен!</h2><div class="results-score">Правильных ответов: <strong>${this.state.score}</strong> из <strong>${this.state.totalTasks}</strong></div><p style="margin-bottom: 20px;">Не забудьте выполнить самостоятельную работу и загрузить фото на Взнание!</p><button class="btn btn-primary" onclick="window.location.reload()">Пройти заново</button></div>`;
+        this.renderComplete();
       }
       return;
     }
@@ -76,7 +76,8 @@ const LessonEngine = {
     } else if (task.type === 'input') {
       html += `<input type="text" class="input-answer" id="input-answer" placeholder="Введите ответ...">`;
     } else if (task.type === 'open') {
-      html += `<textarea class="open-answer" id="open-answer" placeholder="Напишите ответ..."></textarea>`;
+      const savedAnswer = this.state.openAnswers[`${this.state.currentTab}-${this.state.taskIndex}`] || '';
+      html += `<textarea class="open-answer" id="open-answer" placeholder="Напишите ответ...">${savedAnswer}</textarea>`;
     }
 
     html += `<div class="actions" id="task-actions">`;
@@ -116,6 +117,7 @@ const LessonEngine = {
     } else if (task.type === 'open') {
       userVal = document.getElementById('open-answer').value.trim();
       if (!userVal) return;
+      this.state.openAnswers[`${this.state.currentTab}-${this.state.taskIndex}`] = userVal;
     }
 
     if (!this.state.answered) {
@@ -125,7 +127,7 @@ const LessonEngine = {
 
     if (task.type === 'open') {
       feedback.className = 'feedback show success';
-      feedback.innerHTML = `<strong>Принято!</strong> Ответ записан.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Проверьте себя по тетради.'}`;
+      feedback.innerHTML = `<strong>Принято!</strong> Ответ сохранен в файл результатов.<br><br><em>Пример для самопроверки:</em> ${task.solution || 'Сверьтесь с тетрадью.'}`;
       this.finishTask();
       return;
     }
@@ -171,5 +173,56 @@ const LessonEngine = {
     this.state.taskIndex++;
     this.renderTask();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  },
+
+  renderComplete() {
+    const container = document.getElementById('task-container');
+    let answersText = "";
+    if (Object.keys(this.state.openAnswers).length > 0) {
+        answersText = `<div style="text-align: left; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="margin-bottom: 10px; font-family: 'Montserrat';">Ваши развернутые ответы:</h3>`;
+        for (let key in this.state.openAnswers) {
+            answersText += `<p style="margin-bottom: 10px; font-size: 15px;">${this.state.openAnswers[key]}</p>`;
+        }
+        answersText += `</div>`;
+    }
+
+    container.innerHTML = `
+      <div class="results-card">
+        <h2 class="results-title">Урок завершен!</h2>
+        <div class="results-score">Правильных ответов в тестах: <strong>${this.state.score}</strong> из <strong>${this.state.totalTasks}</strong></div>
+        
+        ${answersText}
+        
+        <p style="margin-bottom: 20px;"><strong>Скачайте файл с вашими ответами и прикрепите его на платформу Взнание вместе с фото тетради!</strong></p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="LessonEngine.download()">Скачать ответы (.txt)</button>
+            <button class="btn btn-secondary" onclick="window.location.reload()">Пройти заново</button>
+        </div>
+      </div>
+    `;
+  },
+
+  download() {
+    let text = `Результаты урока: ${this.data.subject}\n\n`;
+    text += `Тестов решено верно: ${this.state.score}\n\n`;
+    text += `--- РАЗВЕРНУТЫЕ ОТВЕТЫ ---\n\n`;
+    
+    let hasAnswers = false;
+    for (let key in this.state.openAnswers) {
+        hasAnswers = true;
+        text += `Ответ на задание: ${this.state.openAnswers[key]}\n\n`;
+    }
+    
+    if (!hasAnswers) text += "Развернутых ответов нет.\n";
+
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'otvety_urok.txt';
+    a.click();
+    URL.revokeObjectURL(url);
   }
 };
